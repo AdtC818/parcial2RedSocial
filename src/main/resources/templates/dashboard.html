@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Red Social</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Red Social UPTC</a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3" th:text="'Hola, ' + ${usuario.nombre}"></span>
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav> <!-- CAMBIÉ </div> POR </nav> -->
+    
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <!-- Sidebar izquierdo -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Menú</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Pestañas -->
+                        <div class="list-group">
+                            <a href="#amigos" class="list-group-item list-group-item-action active" 
+                               onclick="mostrarSeccion('amigos')">
+                                Amigos
+                            </a>
+                            <a href="#hobbies" class="list-group-item list-group-item-action" 
+                               onclick="mostrarSeccion('hobbies')">
+                                Hobbies
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido principal -->
+            <div class="col-md-9">
+                <!-- Sección Amigos -->
+                <div id="seccion-amigos" class="card">
+                    <div class="card-header">
+                        <h5>Red de Amigos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Aquí aparecerán los grafos de conexiones entre amigos.</p>
+                        <div class="text-center">
+                            <p class="text-muted">Próximamente: Visualización de red de amigos con Neo4j</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sección Hobbies -->
+                <div id="seccion-hobbies" class="card" style="display: none;">
+                    <div class="card-header">
+                        <h5>Mis Hobbies</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Hobbies actuales:</h6>
+                                <ul class="list-group">
+                                    <li class="list-group-item" th:each="hobby : ${hobbies}" th:text="${hobby}"></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Información:</h6>
+                                <p class="text-muted">Los hobbies se almacenan en MongoDB como documentos JSON.</p>
+                                <p class="text-muted">Próximamente: Conexiones basadas en hobbies comunes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function mostrarSeccion(seccion) {
+            // Ocultar todas las secciones
+            document.getElementById('seccion-amigos').style.display = 'none';
+            document.getElementById('seccion-hobbies').style.display = 'none';
+            
+            // Mostrar la sección seleccionada
+            document.getElementById('seccion-' + seccion).style.display = 'block';
+            
+            // Actualizar pestañas activas
+            document.querySelectorAll('.list-group-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
