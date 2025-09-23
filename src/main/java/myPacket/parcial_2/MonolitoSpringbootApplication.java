@@ -20,9 +20,7 @@ public class MonolitoSpringbootApplication implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        // Inicializar hobbies al arrancar la aplicación
-        System.out.println("=== INICIALIZANDO HOBBIES ===");
         usuarioService.inicializarHobbiesPrueba();
-        System.out.println("=== HOBBIES INICIALIZADOS ===");
+        usuarioService.inicializarUsuariosYAmistades();
     }
 }

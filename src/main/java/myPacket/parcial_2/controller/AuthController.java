@@ -58,9 +58,6 @@ public class AuthController {
             return "redirect:/";
         }
 
-        // Inicializar hobbies de prueba si no existen
-        //usuarioService.inicializarHobbiesPrueba();
-
         // Obtener hobbies del usuario actual
         Optional<UsuarioHobbies> hobbiesOpt = usuarioService.obtenerHobbiesUsuario(usuario.getId());
 
