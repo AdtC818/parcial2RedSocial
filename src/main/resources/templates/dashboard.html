@@ -1,41 +1,286 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Red Social</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Colores Pastel */
+        :root {
+            --pastel-aqua-light: #E0F8FF;
+            --pastel-aqua: #B0E6F5;
+            --pastel-aqua-dark: #7DD3FC;
+            --pastel-lime-light: #F0FFF4;
+            --pastel-lime: #C8E6C9;
+            --pastel-lime-dark: #A5D6A7;
+            --pastel-mint: #E8F5E8;
+            --pastel-coral: #FFE4E1;
+            --pastel-lavender: #F0E6FF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%) !important;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand, .navbar-text, .nav-link {
+            color: #2d3436 !important;
+            font-weight: 600;
+        }
+        
+        .container-fluid {
+            background: transparent;
+            padding: 20px;
+            margin-top: 0;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%);
+            color: #2d3436;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .list-group-item {
+            border: none;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .list-group-item:hover {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            color: #2d3436;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.3);
+        }
+        
+        .list-group-item.active {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            border: none;
+            color: #2d3436;
+            font-weight: 600;
+        }
+        
+        .btn-primary, .btn-light {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            color: #2d3436;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover, .btn-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(125, 211, 252, 0.4);
+            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%);
+        }
+        
+        .node {
+            stroke: #fff;
+            stroke-width: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node.current-user {
+            fill: url(#userGradient);
+        }
+        
+        .node:not(.current-user) {
+            fill: url(#friendGradient);
+        }
+        
+        .link {
+            stroke: url(#linkGradient);
+            stroke-opacity: 0.7;
+            stroke-width: 3px;
+        }
+        
+        .node-label {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            fill: #2d3436;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        
+        .node-hobby {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            fill: #636e72;
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: 500;
+        }
+        
+        .hobby-badge {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            color: #2d3436;
+            border-radius: 15px;
+            padding: 4px 12px;
+            margin: 3px;
+            font-size: 0.85em;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(125, 211, 252, 0.2);
+            display: inline-block;
+        }
+        
+        .hobby-badge.bg-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+        
+        #graph-container,
+        #hobbies-graph-container {
+            border: 2px solid transparent;
+            border-radius: 20px;
+            min-height: 450px;
+            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #graph-container::before,
+        #hobbies-graph-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(125, 211, 252, 0.1) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 80%, rgba(165, 214, 167, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        
+        .friend-card {
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, var(--pastel-mint) 100%);
+            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .friend-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(125, 211, 252, 0.25);
+        }
+        
+        .friend-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3436;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(125, 211, 252, 0.3);
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--pastel-aqua-dark) !important;
+        }
+        
+        .loading-text {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
+            border: 1px solid var(--pastel-aqua);
+            border-radius: 15px;
+            color: #2d3436;
+        }
+        
+        .form-select {
+            border-radius: 12px;
+            border: 2px solid var(--pastel-aqua);
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--pastel-aqua-dark);
+            box-shadow: 0 0 0 0.2rem rgba(125, 211, 252, 0.25);
+        }
+        
+        /* Fix para evitar que el contenido se oculte */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Red Social UPTC</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-users me-2"></i>Red Social UPTC</a>
             <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3" th:text="'Hola, ' + ${usuario.nombre}"></span>
-                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span th:text="'Hola, ' + ${usuario.nombre}"></span>
+                </span>
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                </a>
             </div>
         </div>
-    </nav> <!-- CAMBIÉ </div> POR </nav> -->
+    </nav>
     
-    <div class="container-fluid mt-3">
+    <div class="container-fluid main-content">
         <div class="row">
             <!-- Sidebar izquierdo -->
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Menú</h5>
+                        <h5><i class="fas fa-bars me-2"></i>Menú</h5>
                     </div>
                     <div class="card-body">
-                        <!-- Pestañas -->
-                        <div class="list-group">
-                            <a href="#amigos" class="list-group-item list-group-item-action active" 
-                               onclick="mostrarSeccion('amigos')">
-                                Amigos
+                        <div class="list-group" role="tablist">
+                            <a href="#amigos" class="list-group-item list-group-item-action active"
+                                onclick="mostrarSeccion('amigos', event)">
+                                <i class="fas fa-user-friends me-2"></i>Amigos
                             </a>
-                            <a href="#hobbies" class="list-group-item list-group-item-action" 
-                               onclick="mostrarSeccion('hobbies')">
-                                Hobbies
+                            <a href="#hobbies" class="list-group-item list-group-item-action"
+                                onclick="mostrarSeccion('hobbies', event)">
+                                <i class="fas fa-heart me-2"></i>Hobbies
                             </a>
                         </div>
                     </div>
@@ -46,13 +291,25 @@
             <div class="col-md-9">
                 <!-- Sección Amigos -->
                 <div id="seccion-amigos" class="card">
-                    <div class="card-header">
-                        <h5>Red de Amigos</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-project-diagram me-2"></i>Red de Amigos</h5>
+                        <button class="btn btn-primary btn-sm" onclick="cargarGrafoAmigos()">
+                            <i class="fas fa-sync-alt me-2"></i>Actualizar Conexiones
+                        </button>
                     </div>
                     <div class="card-body">
-                        <p>Aquí aparecerán los grafos de conexiones entre amigos.</p>
-                        <div class="text-center">
-                            <p class="text-muted">Próximamente: Visualización de red de amigos con Neo4j</p>
+                        <div id="loading-amigos" class="text-center d-none">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 loading-text">Cargando tu red de amigos...</p>
+                        </div>
+                        <div id="graph-container"></div>
+                        <div id="amigos-info" class="mt-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Presiona "Actualizar Conexiones" para ver tu red de amigos desde Neo4j.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,20 +317,39 @@
                 <!-- Sección Hobbies -->
                 <div id="seccion-hobbies" class="card" style="display: none;">
                     <div class="card-header">
-                        <h5>Mis Hobbies</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
+                        <h5><i class="fas fa-palette me-2"></i>Red de Amigos por Hobbies</h5>
+                        <div class="row mt-3">
                             <div class="col-md-6">
-                                <h6>Hobbies actuales:</h6>
-                                <ul class="list-group">
-                                    <li class="list-group-item" th:each="hobby : ${hobbies}" th:text="${hobby}"></li>
-                                </ul>
+                                <h6><i class="fas fa-star me-2"></i>Mis Hobbies actuales:</h6>
+                                <div class="d-flex flex-wrap">
+                                    <span class="hobby-badge" th:each="hobby : ${hobbies}" th:text="${hobby}"></span>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <h6>Información:</h6>
-                                <p class="text-muted">Los hobbies se almacenan en MongoDB como documentos JSON.</p>
-                                <p class="text-muted">Próximamente: Conexiones basadas en hobbies comunes</p>
+                                <h6><i class="fas fa-filter me-2"></i>Filtrar amigos por hobby:</h6>
+                                <div class="d-flex gap-2">
+                                    <select id="filtro-hobbies" class="form-select form-select-sm" onchange="aplicarFiltroHobbies()">
+                                        <option value="">Todos los hobbies</option>
+                                    </select>
+                                    <button class="btn btn-primary btn-sm" onclick="cargarHobbiesDisponibles()">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="loading-hobbies" class="text-center d-none">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 loading-text">Cargando amigos con hobbies...</p>
+                        </div>
+                        <div id="hobbies-graph-container"></div>
+                        <div id="hobbies-info" class="mt-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Selecciona un hobby para filtrar tu red de amigos con intereses comunes.
                             </div>
                         </div>
                     </div>
@@ -81,23 +357,570 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
-        function mostrarSeccion(seccion) {
+        let currentSection = 'amigos';
+        
+        function mostrarSeccion(seccion, event) {
+            if (event && event.preventDefault) event.preventDefault();
+            
             // Ocultar todas las secciones
             document.getElementById('seccion-amigos').style.display = 'none';
             document.getElementById('seccion-hobbies').style.display = 'none';
             
             // Mostrar la sección seleccionada
-            document.getElementById('seccion-' + seccion).style.display = 'block';
+            const targetId = 'seccion-' + seccion;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) targetEl.style.display = 'block';
+            currentSection = seccion;
             
             // Actualizar pestañas activas
             document.querySelectorAll('.list-group-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            
+            // Cargar datos según la sección
+            if (seccion === 'amigos') {
+                setTimeout(() => cargarGrafoAmigos(), 100);
+            } else if (seccion === 'hobbies') {
+                setTimeout(() => cargarHobbiesDisponibles(), 100);
+            }
         }
+        
+        function mostrarLoading(seccion, mostrar) {
+            const loading = document.getElementById(`loading-${seccion}`);
+            if (!loading) return;
+            if (mostrar) {
+                loading.classList.remove('d-none');
+            } else {
+                loading.classList.add('d-none');
+            }
+        }
+
+        function getInitials(name) {
+            if (!name) return '';
+            return name.split(' ').map(n => n[0] || '').join('').slice(0, 3).toUpperCase();
+        }
+
+        function createGradients(svg) {
+            const defs = svg.append("defs");
+            
+            // Gradiente pastel para usuario actual
+            const userGradient = defs.append("linearGradient")
+                .attr("id", "userGradient");
+            userGradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#FFB3BA"); // Rosa pastel
+            userGradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#FFDFBA"); // Durazno pastel
+            
+            // Gradiente pastel para amigos
+            const friendGradient = defs.append("linearGradient")
+                .attr("id", "friendGradient");
+            friendGradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#7DD3FC"); // Aqua pastel
+            friendGradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#A5D6A7"); // Lima pastel
+            
+            // Gradiente para enlaces
+            const linkGradient = defs.append("linearGradient")
+                .attr("id", "linkGradient");
+            linkGradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#7DD3FC")
+                .attr("stop-opacity", 0.6);
+            linkGradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#A5D6A7")
+                .attr("stop-opacity", 0.6);
+        }
+        
+        /**
+         * --- GRAFO AMIGOS ---
+         */
+        function cargarGrafoAmigos() {
+            mostrarLoading('amigos', true);
+            
+            fetch('/api/amigos')
+                .then(response => response.json())
+                .then(data => {
+                    mostrarLoading('amigos', false);
+                    if (data && data.success) {
+                        crearGrafoAmigos(data);
+                        actualizarInfoAmigos(data);
+                    } else {
+                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
+                        document.getElementById('amigos-info').innerHTML =
+                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
+                    }
+                })
+                .catch(error => {
+                    mostrarLoading('amigos', false);
+                    document.getElementById('amigos-info').innerHTML =
+                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando datos: ${error}</div>`;
+                });
+        }
+        
+        function crearGrafoAmigos(data) {
+            // Limpiar contenedor
+            d3.select("#graph-container").selectAll("*").remove();
+            
+            const container = document.getElementById('graph-container');
+            const width = container.offsetWidth || 600;
+            const height = 450;
+            
+            const svg = d3.select("#graph-container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            createGradients(svg);
+            
+            // Preparar datos
+            const nodes = [
+                {
+                    id: data.usuarioActual.id,
+                    name: data.usuarioActual.nombre,
+                    email: data.usuarioActual.email,
+                    isCurrentUser: true
+                }
+            ];
+            
+            if (Array.isArray(data.amigos)) {
+                data.amigos.forEach(amigo => {
+                    nodes.push({
+                        id: amigo.id,
+                        name: amigo.nombre,
+                        email: amigo.email,
+                        isCurrentUser: false
+                    });
+                });
+            }
+            
+            const links = (Array.isArray(data.amigos) ? data.amigos : []).map(amigo => ({
+                source: data.usuarioActual.id,
+                target: amigo.id
+            }));
+            
+            if (nodes.length === 1) {
+                svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("text-anchor", "middle")
+                    .attr("class", "node-label")
+                    .style("font-size", "18px")
+                    .style("fill", "#636e72")
+                    .text("No tienes amigos conectados aún");
+                return;
+            }
+            
+            // Configurar simulación
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+                .force("charge", d3.forceManyBody().strength(-400))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(50)); // Evitar superposición
+            
+            // Crear enlaces
+            const link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("class", "link");
+            
+            // Crear grupos de nodos
+            const nodeGroup = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("g")
+                .data(nodes)
+                .join("g")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+            
+            // Círculos con avatar
+            nodeGroup.append("circle")
+                .attr("class", d => d.isCurrentUser ? "node current-user" : "node")
+                .attr("r", 35);
+            
+            // Texto con iniciales como avatar
+            nodeGroup.append("text")
+                .attr("class", "node-label")
+                .attr("y", 5)
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
+                .style("fill", "#2d3436")
+                .text(d => getInitials(d.name));
+            
+            // Nombre debajo del círculo
+            nodeGroup.append("text")
+                .attr("class", "node-label")
+                .attr("y", 55)
+                .style("font-size", "14px")
+                .style("font-weight", d => d.isCurrentUser ? "bold" : "600")
+                .text(d => d.name);
+            
+            // Tooltip con email
+            nodeGroup.append("title")
+                .text(d => d.email ? `${d.name}\n${d.email}` : d.name);
+            
+            // Funciones de arrastre
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            // Actualizar posiciones
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+                
+                nodeGroup
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        }
+        
+        function actualizarInfoAmigos(data) {
+            let info = `<h6><i class="fas fa-network-wired me-2"></i>Tu Red de Amigos en Neo4j:</h6>`;
+            info += `<p><strong>Tienes ${Array.isArray(data.amigos) ? data.amigos.length : 0} amigo(s) conectado(s)</strong></p>`;
+            
+            if (Array.isArray(data.amigos) && data.amigos.length > 0) {
+                info += `<div class="row">`;
+                data.amigos.forEach(amigo => {
+                    info += `<div class="col-md-6 mb-3">
+                        <div class="friend-card card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="friend-avatar me-3">
+                                        ${getInitials(amigo.nombre)}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">${amigo.nombre}</h6>
+                                        <small class="text-muted">
+                                            <i class="fas fa-envelope me-1"></i>
+                                            ${amigo.email || ''}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                info += `</div>`;
+                
+                info += `<div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Leyenda:</strong>
+                    <span style="color: #FFB3BA;"><i class="fas fa-circle"></i></span> Tú &nbsp;&nbsp;
+                    <span style="color: #7DD3FC;"><i class="fas fa-circle"></i></span> Tus amigos &nbsp;&nbsp;
+                    <small>Los nodos se pueden arrastrar para reorganizar el grafo</small>
+                </div>`;
+            }
+            
+            document.getElementById('amigos-info').innerHTML = info;
+        }
+        
+        /**
+         * --- GRAFO HOBBIES ---
+         */
+        function cargarHobbiesDisponibles() {
+            fetch('/api/hobbies-disponibles')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.success) {
+                        const select = document.getElementById('filtro-hobbies');
+                        select.innerHTML = '<option value="">Todos los hobbies</option>';
+                        
+                        if (Array.isArray(data.hobbies)) {
+                            data.hobbies.forEach(hobby => {
+                                const option = document.createElement('option');
+                                option.value = hobby;
+                                option.textContent = hobby;
+                                select.appendChild(option);
+                            });
+                        }
+                        
+                        aplicarFiltroHobbies();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cargando hobbies:', error);
+                });
+        }
+        
+        function aplicarFiltroHobbies() {
+            mostrarLoading('hobbies', true);
+            const filtro = document.getElementById('filtro-hobbies').value;
+            
+            fetch(`/api/amigos-hobbies${filtro ? '?filtroHobby=' + encodeURIComponent(filtro) : ''}`)
+                .then(response => response.json())
+                .then(data => {
+                    mostrarLoading('hobbies', false);
+                    if (data && data.success) {
+                        crearGrafoHobbies(data);
+                        actualizarInfoHobbies(data);
+                    } else {
+                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
+                        document.getElementById('hobbies-info').innerHTML =
+                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
+                    }
+                })
+                .catch(error => {
+                    mostrarLoading('hobbies', false);
+                    console.error('Error:', error);
+                    document.getElementById('hobbies-info').innerHTML =
+                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando datos: ${error}</div>`;
+                });
+        }
+        
+        function crearGrafoHobbies(data) {
+            // Limpiar contenedor
+            d3.select("#hobbies-graph-container").selectAll("*").remove();
+            
+            const container = document.getElementById('hobbies-graph-container');
+            const width = container.offsetWidth || 600;
+            const height = 450;
+            
+            const svg = d3.select("#hobbies-graph-container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            createGradients(svg);
+            
+            // Preparar datos
+            const nodes = [
+                {
+                    id: data.usuarioActual.id,
+                    name: data.usuarioActual.nombre,
+                    hobbies: Array.isArray(data.usuarioActual.hobbies) ? data.usuarioActual.hobbies : [],
+                    isCurrentUser: true
+                }
+            ];
+            
+            if (Array.isArray(data.amigosConHobbies)) {
+                data.amigosConHobbies.forEach(amigo => {
+                    nodes.push({
+                        id: amigo.id,
+                        name: amigo.nombre,
+                        hobbies: Array.isArray(amigo.hobbies) ? amigo.hobbies : [],
+                        isCurrentUser: false
+                    });
+                });
+            }
+            
+            const links = (Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies : []).map(amigo => ({
+                source: data.usuarioActual.id,
+                target: amigo.id
+            }));
+            
+            if (nodes.length === 1) {
+                svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("text-anchor", "middle")
+                    .attr("class", "node-label")
+                    .style("font-size", "18px")
+                    .style("fill", "#636e72")
+                    .text(data.filtroAplicado ? 
+                        `No hay amigos con el hobby "${data.filtroAplicado}"` : 
+                        "No tienes amigos conectados");
+                return;
+            }
+            
+            // Configurar simulación
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(180))
+                .force("charge", d3.forceManyBody().strength(-500))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(60));
+            
+            // Crear enlaces
+            const link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("class", "link");
+            
+            // Crear grupos de nodos
+            const nodeGroup = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("g")
+                .data(nodes)
+                .join("g")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+            
+            // Círculos más grandes para hobbies
+            nodeGroup.append("circle")
+                .attr("class", d => d.isCurrentUser ? "node current-user" : "node")
+                .attr("r", 40);
+            
+            // Texto con iniciales como avatar
+            nodeGroup.append("text")
+                .attr("class", "node-label")
+                .attr("y", 5)
+                .style("font-size", "18px")
+                .style("font-weight", "bold")
+                .style("fill", "#2d3436")
+                .text(d => getInitials(d.name));
+            
+            // Nombre debajo del círculo
+            nodeGroup.append("text")
+                .attr("class", "node-label")
+                .attr("y", 60)
+                .style("font-size", "14px")
+                .style("font-weight", d => d.isCurrentUser ? "bold" : "600")
+                .text(d => d.name);
+            
+            // Mostrar hobbies debajo del nombre con mejor legibilidad
+            nodeGroup.each(function(d) {
+                const group = d3.select(this);
+                (d.hobbies || []).slice(0, 2).forEach((hobby, index) => {
+                    group.append("text")
+                        .attr("y", 78 + (index * 14))
+                        .attr("class", "node-hobby")
+                        .style("font-weight", "500")
+                        .text(hobby);
+                });
+                if ((d.hobbies || []).length > 2) {
+                    group.append("text")
+                        .attr("y", 78 + (2 * 14))
+                        .attr("class", "node-hobby")
+                        .style("font-style", "italic")
+                        .text(`+${d.hobbies.length - 2} más`);
+                }
+            });
+            
+            // Tooltip con todos los hobbies
+            nodeGroup.append("title")
+                .text(d => `${d.name}\nHobbies: ${(d.hobbies || []).join(', ') || 'Sin hobbies'}`);
+            
+            // Funciones de arrastre para hobbies
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            // Actualizar posiciones
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+                
+                nodeGroup
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        }
+        
+        function actualizarInfoHobbies(data) {
+            let info = `<h6><i class="fas fa-heart me-2"></i>Red de Amigos por Hobbies:</h6>`;
+            
+            if (data.filtroAplicado) {
+                info += `<div class="alert alert-info py-2">
+                    <i class="fas fa-filter me-2"></i>
+                    <strong>Filtro aplicado:</strong> "${data.filtroAplicado}" - 
+                    Mostrando ${Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies.length : 0} amigo(s)
+                </div>`;
+            }
+            
+            info += `<p><strong>${Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies.length : 0} amigo(s) ${data.filtroAplicado ? 'con este hobby' : 'total'}</strong></p>`;
+            
+            if (Array.isArray(data.amigosConHobbies) && data.amigosConHobbies.length > 0) {
+                info += `<div class="row">`;
+                data.amigosConHobbies.forEach(amigo => {
+                    info += `<div class="col-md-6 mb-3">
+                        <div class="friend-card card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="friend-avatar me-3">
+                                        ${getInitials(amigo.nombre)}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-2">${amigo.nombre}</h6>
+                                        <div class="d-flex flex-wrap">`;
+                    (amigo.hobbies || []).forEach(hobby => {
+                        const isFiltered = data.filtroAplicado && hobby.toLowerCase().includes((data.filtroAplicado || '').toLowerCase());
+                        info += `<span class="hobby-badge ${isFiltered ? 'bg-warning' : ''}">${hobby}</span>`;
+                    });
+                    info += `</div></div></div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                info += `</div>`;
+                
+                info += `<div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Leyenda:</strong> 
+                    <span style="color: #FFB3BA;"><i class="fas fa-circle"></i></span> Tú &nbsp;&nbsp;
+                    <span style="color: #7DD3FC;"><i class="fas fa-circle"></i></span> Tus amigos &nbsp;&nbsp;
+                    <span class="hobby-badge bg-warning">Hobby filtrado</span>
+                </div>`;
+            }
+            
+            document.getElementById('hobbies-info').innerHTML = info;
+        }
+        
+        // Cargar datos iniciales al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar sección amigos al cargar
+            mostrarSeccion('amigos', { 
+                preventDefault: () => {}, 
+                currentTarget: document.querySelector('.list-group-item.active') 
+            });
+
+            // Hacer que los SVG se redimensionen al cambiar tamaño de ventana
+            window.addEventListener('resize', () => {
+                // recargar la sección actual para recalcular tamaños
+                if (currentSection === 'amigos') {
+                    cargarGrafoAmigos();
+                } else if (currentSection === 'hobbies') {
+                    cargarHobbiesDisponibles();
+                }
+            });
+        });
     </script>
 </body>
 </html>
