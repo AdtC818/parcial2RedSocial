@@ -18,6 +18,8 @@
             --pastel-mint: #E8F5E8;
             --pastel-coral: #FFE4E1;
             --pastel-lavender: #F0E6FF;
+            --pastel-yellow: #FFF8DC;
+            --pastel-pink: #FFB3E6;
         }
         
         body {
@@ -98,6 +100,19 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(125, 211, 252, 0.4);
             background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--pastel-aqua-dark);
+            color: var(--pastel-aqua-dark);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            border-color: var(--pastel-aqua-dark);
+            color: #2d3436;
         }
         
         .node {
@@ -209,6 +224,94 @@
             box-shadow: 0 4px 12px rgba(125, 211, 252, 0.3);
         }
         
+        /* Estilos específicos para eventos */
+        .event-card {
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, var(--pastel-coral) 100%);
+            box-shadow: 0 6px 25px rgba(255, 182, 193, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(255, 182, 193, 0.35);
+        }
+        
+        .event-image {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .event-card:hover .event-image {
+            transform: scale(1.05);
+        }
+        
+        .event-category {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
+            color: #2d3436;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.8em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+        
+        .event-price {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--pastel-yellow);
+            color: #d35400;
+            padding: 6px 12px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+        
+        .event-price.gratis {
+            background: var(--pastel-mint);
+            color: #27ae60;
+        }
+        
+        .event-date {
+            color: var(--pastel-aqua-dark);
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .event-location {
+            color: #636e72;
+            font-size: 0.85em;
+            font-style: italic;
+        }
+        
+        .event-organizer {
+            color: #74b9ff;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .event-filters {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
         .spinner-border {
             width: 3rem;
             height: 3rem;
@@ -229,21 +332,43 @@
             color: #2d3436;
         }
         
-        .form-select {
+        .form-select, .form-control {
             border-radius: 12px;
             border: 2px solid var(--pastel-aqua);
             transition: all 0.3s ease;
         }
         
-        .form-select:focus {
+        .form-select:focus, .form-control:focus {
             border-color: var(--pastel-aqua-dark);
             box-shadow: 0 0 0 0.2rem rgba(125, 211, 252, 0.25);
         }
         
-        /* Fix para evitar que el contenido se oculte */
         .main-content {
             position: relative;
             z-index: 1;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--pastel-pink) 100%);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            color: #2d3436;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(240, 230, 255, 0.3);
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: #636e72;
+        }
+        
+        .no-events i {
+            font-size: 4em;
+            color: var(--pastel-aqua);
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -281,6 +406,10 @@
                             <a href="#hobbies" class="list-group-item list-group-item-action"
                                 onclick="mostrarSeccion('hobbies', event)">
                                 <i class="fas fa-heart me-2"></i>Hobbies
+                            </a>
+                            <a href="#eventos" class="list-group-item list-group-item-action"
+                                onclick="mostrarSeccion('eventos', event)">
+                                <i class="fas fa-calendar-alt me-2"></i>Eventos
                             </a>
                         </div>
                     </div>
@@ -354,6 +483,96 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Sección Eventos -->
+                <div id="seccion-eventos" class="card" style="display: none;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-calendar-alt me-2"></i>Eventos Disponibles</h5>
+                        <button class="btn btn-primary btn-sm" onclick="cargarEventos()">
+                            <i class="fas fa-sync-alt me-2"></i>Actualizar Eventos
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filtros de eventos -->
+                        <div class="event-filters">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-search me-1"></i>Buscar eventos:
+                                    </label>
+                                    <input type="text" id="busqueda-eventos" class="form-control" 
+                                           placeholder="Título, lugar o descripción..." 
+                                           onkeyup="aplicarFiltrosEventos()">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-tags me-1"></i>Categoría:
+                                    </label>
+                                    <select id="categoria-eventos" class="form-select" onchange="aplicarFiltrosEventos()">
+                                        <option value="">Todas las categorías</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-money-bill me-1"></i>Precio:
+                                    </label>
+                                    <select id="precio-eventos" class="form-select" onchange="aplicarFiltrosEventos()">
+                                        <option value="">Todos los precios</option>
+                                        <option value="gratis">Gratis</option>
+                                        <option value="pago">De pago</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-outline-primary w-100" onclick="limpiarFiltrosEventos()">
+                                        <i class="fas fa-eraser me-1"></i>Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Estadísticas de eventos -->
+                        <div id="eventos-stats" class="row mb-4" style="display: none;">
+                            <div class="col-md-3">
+                                <div class="stats-card">
+                                    <div class="h4 mb-1" id="total-eventos">0</div>
+                                    <div>Total Eventos</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card">
+                                    <div class="h4 mb-1" id="eventos-mostrados">0</div>
+                                    <div>Mostrados</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card">
+                                    <div class="h4 mb-1" id="filtros-activos">0</div>
+                                    <div>Filtros Activos</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card">
+                                    <div class="h4 mb-1" id="categorias-disponibles">0</div>
+                                    <div>Categorías</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="loading-eventos" class="text-center d-none">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 loading-text">Cargando eventos disponibles...</p>
+                        </div>
+                        
+                        <div id="eventos-container">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Presiona "Actualizar Eventos" para ver todos los eventos disponibles.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -363,6 +582,8 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
         let currentSection = 'amigos';
+        let eventosActuales = [];
+        let categoriasDisponibles = [];
         
         function mostrarSeccion(seccion, event) {
             if (event && event.preventDefault) event.preventDefault();
@@ -370,6 +591,7 @@
             // Ocultar todas las secciones
             document.getElementById('seccion-amigos').style.display = 'none';
             document.getElementById('seccion-hobbies').style.display = 'none';
+            document.getElementById('seccion-eventos').style.display = 'none';
             
             // Mostrar la sección seleccionada
             const targetId = 'seccion-' + seccion;
@@ -388,6 +610,11 @@
                 setTimeout(() => cargarGrafoAmigos(), 100);
             } else if (seccion === 'hobbies') {
                 setTimeout(() => cargarHobbiesDisponibles(), 100);
+            } else if (seccion === 'eventos') {
+                setTimeout(() => {
+                    cargarCategorias();
+                    cargarEventos();
+                }, 100);
             }
         }
         
@@ -903,6 +1130,199 @@
             document.getElementById('hobbies-info').innerHTML = info;
         }
         
+        /**
+         * --- EVENTOS ---
+         */
+        function cargarEventos() {
+            mostrarLoading('eventos', true);
+            
+            fetch('/api/eventos')
+                .then(response => response.json())
+                .then(data => {
+                    mostrarLoading('eventos', false);
+                    if (data && data.success) {
+                        eventosActuales = data.eventos || [];
+                        mostrarEventos(eventosActuales);
+                        actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
+                        document.getElementById('eventos-stats').style.display = 'block';
+                    } else {
+                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
+                        document.getElementById('eventos-container').innerHTML =
+                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
+                    }
+                })
+                .catch(error => {
+                    mostrarLoading('eventos', false);
+                    document.getElementById('eventos-container').innerHTML =
+                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando eventos: ${error}</div>`;
+                });
+        }
+        
+        function cargarCategorias() {
+            fetch('/api/eventos/categorias')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.success) {
+                        categoriasDisponibles = data.categorias || [];
+                        const select = document.getElementById('categoria-eventos');
+                        select.innerHTML = '<option value="">Todas las categorías</option>';
+                        
+                        categoriasDisponibles.forEach(categoria => {
+                            const option = document.createElement('option');
+                            option.value = categoria;
+                            option.textContent = categoria;
+                            select.appendChild(option);
+                        });
+                        
+                        document.getElementById('categorias-disponibles').textContent = categoriasDisponibles.length;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cargando categorías:', error);
+                });
+        }
+        
+        function aplicarFiltrosEventos() {
+            const busqueda = document.getElementById('busqueda-eventos').value.trim();
+            const categoria = document.getElementById('categoria-eventos').value;
+            const precio = document.getElementById('precio-eventos').value;
+            
+            const params = new URLSearchParams();
+            if (busqueda) params.append('busqueda', busqueda);
+            if (categoria) params.append('categoria', categoria);
+            if (precio) params.append('precio', precio);
+            
+            mostrarLoading('eventos', true);
+            
+            fetch(`/api/eventos/filtrar?${params.toString()}`)
+                .then(response => response.json())
+                .then(data => {
+                    mostrarLoading('eventos', false);
+                    if (data && data.success) {
+                        const eventosFiltrados = data.eventos || [];
+                        mostrarEventos(eventosFiltrados);
+                        
+                        // Contar filtros activos
+                        let filtrosActivos = 0;
+                        if (busqueda) filtrosActivos++;
+                        if (categoria) filtrosActivos++;
+                        if (precio) filtrosActivos++;
+                        
+                        actualizarEstadisticas(eventosActuales.length, eventosFiltrados.length, filtrosActivos);
+                    } else {
+                        const err = data && data.error ? data.error : 'Error aplicando filtros';
+                        document.getElementById('eventos-container').innerHTML =
+                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
+                    }
+                })
+                .catch(error => {
+                    mostrarLoading('eventos', false);
+                    document.getElementById('eventos-container').innerHTML =
+                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error filtrando eventos: ${error}</div>`;
+                });
+        }
+        
+        function limpiarFiltrosEventos() {
+            document.getElementById('busqueda-eventos').value = '';
+            document.getElementById('categoria-eventos').value = '';
+            document.getElementById('precio-eventos').value = '';
+            mostrarEventos(eventosActuales);
+            actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
+        }
+        
+        function mostrarEventos(eventos) {
+            const container = document.getElementById('eventos-container');
+            
+            if (!eventos || eventos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-events">
+                        <i class="fas fa-calendar-times"></i>
+                        <h4>No se encontraron eventos</h4>
+                        <p>No hay eventos disponibles con los filtros aplicados.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="row">';
+            
+            eventos.forEach(evento => {
+                const fechaEvento = new Date(evento.fechaEvento);
+                const fechaFormateada = fechaEvento.toLocaleDateString('es-CO', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                const horaFormateada = fechaEvento.toLocaleTimeString('es-CO', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const esGratis = !evento.precio || evento.precio === 0;
+                const precioTexto = esGratis ? 'GRATIS' : `${evento.precio.toLocaleString('es-CO')}`;
+                const precioClass = esGratis ? 'gratis' : '';
+                
+                html += `
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="event-card card h-100">
+                            <div class="position-relative">
+                                <img src="${evento.imagenUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500'}" 
+                                     class="event-image" alt="${evento.titulo}">
+                                <div class="event-category">${evento.categoria || 'General'}</div>
+                                <div class="event-price ${precioClass}">${precioTexto}</div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title mb-3">${evento.titulo}</h5>
+                                <p class="event-date mb-2">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    ${fechaFormateada} a las ${horaFormateada}
+                                </p>
+                                <p class="event-location mb-2">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    ${evento.lugar}
+                                </p>
+                                <p class="event-organizer mb-3">
+                                    <i class="fas fa-user-tie me-2"></i>
+                                    ${evento.organizador}
+                                </p>
+                                <p class="card-text flex-grow-1 mb-3">
+                                    ${evento.descripcion ? (evento.descripcion.length > 150 ? 
+                                        evento.descripcion.substring(0, 150) + '...' : evento.descripcion) : 
+                                        'Sin descripción disponible'}
+                                </p>
+                                <div class="mt-auto">
+                                    ${evento.capacidadMaxima ? 
+                                        `<small class="text-muted d-block mb-2">
+                                            <i class="fas fa-users me-1"></i>
+                                            Capacidad máxima: ${evento.capacidadMaxima} personas
+                                        </small>` : ''
+                                    }
+                                    <button class="btn btn-primary w-100" onclick="verDetallesEvento(${evento.id})">
+                                        <i class="fas fa-eye me-2"></i>Ver Detalles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function actualizarEstadisticas(total, mostrados, filtros) {
+            document.getElementById('total-eventos').textContent = total;
+            document.getElementById('eventos-mostrados').textContent = mostrados;
+            document.getElementById('filtros-activos').textContent = filtros;
+            document.getElementById('categorias-disponibles').textContent = categoriasDisponibles.length;
+        }
+        
+        function verDetallesEvento(eventoId) {
+            // Aquí podrías implementar un modal o redirección para ver detalles
+            alert(`Ver detalles del evento ${eventoId}\n(Funcionalidad a implementar)`);
+        }
+        
         // Cargar datos iniciales al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             // Mostrar sección amigos al cargar
@@ -918,6 +1338,8 @@
                     cargarGrafoAmigos();
                 } else if (currentSection === 'hobbies') {
                     cargarHobbiesDisponibles();
+                } else if (currentSection === 'eventos') {
+                    cargarEventos();
                 }
             });
         });

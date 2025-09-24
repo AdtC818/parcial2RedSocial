@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import myPacket.parcial_2.service.UsuarioService;
 import myPacket.parcial_2.service.Neo4jDirectService;
+import myPacket.parcial_2.service.EventoService;
 import myPacket.parcial_2.model.Usuario;
 import myPacket.parcial_2.model.UsuarioHobbies;
 import myPacket.parcial_2.model.UsuarioNeo4j;
+import myPacket.parcial_2.model.Evento;
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.Arrays;
@@ -24,10 +26,12 @@ public class AuthController {
     
     private final UsuarioService usuarioService;
     private final Neo4jDirectService neo4jDirectService;
+    private final EventoService eventoService;
     
-    public AuthController(UsuarioService usuarioService, Neo4jDirectService neo4jDirectService) {
+    public AuthController(UsuarioService usuarioService, Neo4jDirectService neo4jDirectService, EventoService eventoService) {
         this.usuarioService = usuarioService;
         this.neo4jDirectService = neo4jDirectService;
+        this.eventoService = eventoService;
     }
     
     // Mostrar página de login
@@ -225,6 +229,105 @@ public class AuthController {
             
         } catch (Exception e) {
             response.put("error", "Error obteniendo hobbies: " + e.getMessage());
+            response.put("success", false);
+        }
+        
+        return response;
+    }
+    
+    // ===== NUEVAS FUNCIONALIDADES PARA EVENTOS =====
+    
+    // API para obtener todos los eventos
+    @GetMapping("/api/eventos")
+    @ResponseBody
+    public Map<String, Object> obtenerEventos(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            List<Evento> eventos = eventoService.obtenerEventosProximos();
+            response.put("eventos", eventos);
+            response.put("totalEventos", eventos.size());
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("error", "Error obteniendo eventos: " + e.getMessage());
+            response.put("success", false);
+        }
+        
+        return response;
+    }
+    
+    // API para buscar y filtrar eventos
+    @GetMapping("/api/eventos/filtrar")
+    @ResponseBody
+    public Map<String, Object> filtrarEventos(
+            HttpSession session,
+            @RequestParam(required = false) String busqueda,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) String precio) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            List<Evento> eventos;
+            
+            // Aplicar filtros en orden de prioridad
+            if (busqueda != null && !busqueda.trim().isEmpty()) {
+                eventos = eventoService.buscarEventos(busqueda);
+            } else if (categoria != null && !categoria.trim().isEmpty()) {
+                eventos = eventoService.filtrarPorCategoria(categoria);
+            } else if (precio != null && !precio.trim().isEmpty()) {
+                eventos = eventoService.filtrarPorPrecio(precio);
+            } else {
+                eventos = eventoService.obtenerEventosProximos();
+            }
+            
+            response.put("eventos", eventos);
+            response.put("totalEventos", eventos.size());
+            response.put("filtrosAplicados", Map.of(
+                "busqueda", busqueda != null ? busqueda : "",
+                "categoria", categoria != null ? categoria : "",
+                "precio", precio != null ? precio : ""
+            ));
+            response.put("success", true);
+            
+        } catch (Exception e) {
+            response.put("error", "Error filtrando eventos: " + e.getMessage());
+            response.put("success", false);
+        }
+        
+        return response;
+    }
+    // API para obtener categorías disponibles
+    @GetMapping("/api/eventos/categorias")
+    @ResponseBody
+    public Map<String, Object> obtenerCategorias(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            List<String> categorias = eventoService.obtenerCategorias();
+            response.put("categorias", categorias);
+            response.put("success", true);
+            
+        } catch (Exception e) {
+            response.put("error", "Error obteniendo categorías: " + e.getMessage());
             response.put("success", false);
         }
         
