@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import myPacket.parcial_2.model.Usuario;
 import myPacket.parcial_2.repository.jpa.UsuarioRepository;
+import myPacket.parcial_2.repository.mongodb.UsuarioDocumentRepository;
 import myPacket.parcial_2.repository.mongodb.UsuarioHobbiesRepository;
 import myPacket.parcial_2.model.UsuarioHobbies;
 import java.util.List;
@@ -11,19 +12,22 @@ import java.util.Optional;
 import java.util.Arrays;
 import myPacket.parcial_2.repository.neo4j.UsuarioNeo4jRepository;
 import myPacket.parcial_2.model.UsuarioNeo4j;
+import myPacket.parcial_2.model.UsuarioDocument;
 
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioHobbiesRepository usuarioHobbiesRepository;
     private final UsuarioNeo4jRepository usuarioNeo4jRepository;
+    private final UsuarioDocumentRepository usuarioDocumentRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
             UsuarioHobbiesRepository usuarioHobbiesRepository,
-            UsuarioNeo4jRepository usuarioNeo4jRepository) {
+            UsuarioNeo4jRepository usuarioNeo4jRepository, UsuarioDocumentRepository usuarioDocumentRepository) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioHobbiesRepository = usuarioHobbiesRepository;
         this.usuarioNeo4jRepository = usuarioNeo4jRepository;
+        this.usuarioDocumentRepository = usuarioDocumentRepository;
     }
 
     // Métodos existentes para usuarios
@@ -66,8 +70,8 @@ public class UsuarioService {
 
     // Métodos para Neo4j - Relaciones de amigos
     public List<UsuarioNeo4j> obtenerAmigos(Long usuarioId) {
-    return neo4jDirectService.obtenerAmigos(usuarioId);
-}
+        return neo4jDirectService.obtenerAmigos(usuarioId);
+    }
 
     public List<UsuarioNeo4j> obtenerAmigosDeAmigos(Long usuarioId) {
         try {
@@ -98,14 +102,42 @@ public class UsuarioService {
         }
     }
 
-    // En lugar de usar usuarioNeo4jRepository.count()
-    // Usa este método alternativo que no requiere transacciones complejas:
-
     @Autowired
-private Neo4jDirectService neo4jDirectService;  // Agregar esta línea al principio de la clase
+    private Neo4jDirectService neo4jDirectService;  // Agregar esta línea al principio de la clase
 
-public void inicializarUsuariosYAmistades() {
-    System.out.println("Intentando conectar a Neo4j...");
-    neo4jDirectService.inicializarDatos();
-}
+    public void inicializarUsuariosYAmistades() {
+        System.out.println("Intentando conectar a Neo4j...");
+        neo4jDirectService.inicializarDatos();
+    }
+
+    // ========================
+    // CRUD de UsuarioDocument (MongoDB)
+    // ========================
+
+    public List<UsuarioDocument> listarUsuariosDocument() {
+        return usuarioDocumentRepository.findAll();
+    }
+
+    public Optional<UsuarioDocument> obtenerUsuarioDocumentPorId(String id) {
+        return usuarioDocumentRepository.findById(id);
+    }
+
+    public UsuarioDocument crearUsuarioDocument(UsuarioDocument usuario) {
+        return usuarioDocumentRepository.save(usuario);
+    }
+
+    public UsuarioDocument actualizarUsuarioDocument(String id, UsuarioDocument usuarioActualizado) {
+        return usuarioDocumentRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setNombre(usuarioActualizado.getNombre());
+                    usuario.setEmail(usuarioActualizado.getEmail());
+                    usuario.setEdad(usuarioActualizado.getEdad());
+                    return usuarioDocumentRepository.save(usuario);
+                })
+                .orElseThrow(() -> new RuntimeException("UsuarioDocument no encontrado con id " + id));
+    }
+
+    public void eliminarUsuarioDocument(String id) {
+        usuarioDocumentRepository.deleteById(id);
+    }
 }
