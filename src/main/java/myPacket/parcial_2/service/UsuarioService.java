@@ -1,33 +1,41 @@
 package myPacket.parcial_2.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
+
 import myPacket.parcial_2.model.Usuario;
+import myPacket.parcial_2.model.UsuarioDocument;
+import myPacket.parcial_2.model.UsuarioHobbies;
+import myPacket.parcial_2.model.UsuarioNeo4j;
 import myPacket.parcial_2.repository.jpa.UsuarioRepository;
 import myPacket.parcial_2.repository.mongodb.UsuarioDocumentRepository;
 import myPacket.parcial_2.repository.mongodb.UsuarioHobbiesRepository;
-import myPacket.parcial_2.model.UsuarioHobbies;
-import java.util.List;
-import java.util.Optional;
-import java.util.Arrays;
 import myPacket.parcial_2.repository.neo4j.UsuarioNeo4jRepository;
-import myPacket.parcial_2.model.UsuarioNeo4j;
-import myPacket.parcial_2.model.UsuarioDocument;
 
 @Service
 public class UsuarioService {
+
     private final UsuarioRepository usuarioRepository;
     private final UsuarioHobbiesRepository usuarioHobbiesRepository;
     private final UsuarioNeo4jRepository usuarioNeo4jRepository;
     private final UsuarioDocumentRepository usuarioDocumentRepository;
+    private final Neo4jDirectService neo4jDirectService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository,
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
             UsuarioHobbiesRepository usuarioHobbiesRepository,
-            UsuarioNeo4jRepository usuarioNeo4jRepository, UsuarioDocumentRepository usuarioDocumentRepository) {
+            UsuarioNeo4jRepository usuarioNeo4jRepository,
+            UsuarioDocumentRepository usuarioDocumentRepository,
+            Neo4jDirectService neo4jDirectService) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioHobbiesRepository = usuarioHobbiesRepository;
         this.usuarioNeo4jRepository = usuarioNeo4jRepository;
         this.usuarioDocumentRepository = usuarioDocumentRepository;
+        this.neo4jDirectService = neo4jDirectService;
     }
 
     // Métodos existentes para usuarios
@@ -102,9 +110,6 @@ public class UsuarioService {
         }
     }
 
-    @Autowired
-    private Neo4jDirectService neo4jDirectService;  // Agregar esta línea al principio de la clase
-
     public void inicializarUsuariosYAmistades() {
         System.out.println("Intentando conectar a Neo4j...");
         neo4jDirectService.inicializarDatos();
@@ -148,5 +153,28 @@ public class UsuarioService {
 
     public void eliminarUsuarioDocument(String id) {
         usuarioDocumentRepository.deleteById(id);
+    }
+
+   
+    public void agregarHobby(Long usuarioId, String hobbyNombre) {
+        UsuarioHobbies usuarioHobbies = usuarioHobbiesRepository.findByUsuarioId(usuarioId)
+                .orElse(new UsuarioHobbies(usuarioId, new ArrayList<>()));
+
+        boolean existe = usuarioHobbies.getHobbies().stream()
+                .anyMatch(h -> h.equalsIgnoreCase(hobbyNombre));
+
+        if (!existe) {
+            usuarioHobbies.getHobbies().add(hobbyNombre);
+            usuarioHobbiesRepository.save(usuarioHobbies);
+        }
+    }
+
+    public void eliminarHobby(Long usuarioId, String hobbyNombre) {
+        usuarioHobbiesRepository.findByUsuarioId(usuarioId).ifPresent(usuarioHobbies -> {
+            boolean removed = usuarioHobbies.getHobbies().removeIf(h -> h.equalsIgnoreCase(hobbyNombre));
+            if (removed) {
+                usuarioHobbiesRepository.save(usuarioHobbies);
+            }
+        });
     }
 }

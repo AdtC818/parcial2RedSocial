@@ -266,6 +266,23 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 2;
         }
+
+        .btn-eliminar-hobby {
+            background: none;
+            border: none;
+            color: #2d3436;
+            padding: 0 0 0 5px;
+            margin: 0;
+            line-height: 1;
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-eliminar-hobby:hover {
+            opacity: 1;
+        }
         
         .event-price {
             position: absolute;
@@ -453,10 +470,29 @@
                         <h5><i class="fas fa-palette me-2"></i>Red de Amigos por Hobbies</h5>
                         <div class="row mt-3">
                             <div class="col-md-6">
-                                <h6><i class="fas fa-star me-2"></i>Mis Hobbies actuales:</h6>
-                                <div class="d-flex flex-wrap">
-                                    <span class="hobby-badge" th:each="hobby : ${hobbies}" th:text="${hobby}"></span>
+                            <h6><i class="fas fa-star me-2"></i>Gestionar Mis Hobbies:</h6>
+
+                            <form th:action="@{/hobbies/agregar}" method="post" class="d-flex gap-2 mb-3">
+                                <input type="text" name="hobby" class="form-control form-control-sm" placeholder="Añadir nuevo hobby..." required>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                            
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div th:each="hobby : ${hobbies}" class="hobby-badge d-flex align-items-center me-2 mb-2">
+                                    <span th:text="${hobby}"></span>
+                                    <form th:action="@{/hobbies/eliminar}" method="post" class="ms-2">
+                                        <input type="hidden" name="hobby" th:value="${hobby}">
+                                        <button type="submit" class="btn-eliminar-hobby">
+                                            &times; </button>
+                                    </form>
                                 </div>
+                                
+                                <p class="text-muted" th:if="${hobbies.isEmpty() or hobbies[0] == 'Sin hobbies'}">
+                                    Aún no tienes hobbies. ¡Añade uno!
+                                </p>
+                            </div>
                             </div>
                             <div class="col-md-6">
                                 <h6><i class="fas fa-filter me-2"></i>Filtrar amigos por hobby:</h6>
