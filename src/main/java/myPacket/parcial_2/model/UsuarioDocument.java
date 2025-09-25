@@ -9,15 +9,13 @@ public class UsuarioDocument {
     private String id;
     private String nombre;
     private String email;
-    private int edad;
 
     // Constructores
     public UsuarioDocument() {}
     
-    public UsuarioDocument(String nombre, String email, int edad) {
+    public UsuarioDocument(String nombre, String email) {
         this.nombre = nombre;
         this.email = email;
-        this.edad = edad;
     }
 
     // Getters y setters
@@ -30,6 +28,4 @@ public class UsuarioDocument {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public int getEdad() { return edad; }
-    public void setEdad(int edad) { this.edad = edad; }
 }

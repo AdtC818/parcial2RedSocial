@@ -123,7 +123,17 @@ public class UsuarioService {
     }
 
     public UsuarioDocument crearUsuarioDocument(UsuarioDocument usuario) {
-        return usuarioDocumentRepository.save(usuario);
+        UsuarioDocument saved = usuarioDocumentRepository.save(usuario);
+
+        // Guardar en MySQL
+        Usuario usuarioSql = new Usuario();
+        usuarioSql.setNombre(usuario.getNombre());
+        usuarioSql.setEmail(usuario.getEmail());
+        usuarioSql.setPassword("default123"); // O lo que decidas
+        usuarioSql.setFotoUrl(null); // o algún valor por defecto
+        usuarioRepository.save(usuarioSql);
+
+        return saved;
     }
 
     public UsuarioDocument actualizarUsuarioDocument(String id, UsuarioDocument usuarioActualizado) {
@@ -131,7 +141,6 @@ public class UsuarioService {
                 .map(usuario -> {
                     usuario.setNombre(usuarioActualizado.getNombre());
                     usuario.setEmail(usuarioActualizado.getEmail());
-                    usuario.setEdad(usuarioActualizado.getEdad());
                     return usuarioDocumentRepository.save(usuario);
                 })
                 .orElseThrow(() -> new RuntimeException("UsuarioDocument no encontrado con id " + id));
