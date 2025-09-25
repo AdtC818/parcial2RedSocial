@@ -10,6 +10,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -109,7 +111,6 @@ public class AuthController {
         return "redirect:/dashboard";
     }
 
-   
     @PostMapping("/hobbies/eliminar")
     public String eliminarHobby(@RequestParam String hobby, HttpSession session) {
         // 1. Obtener el usuario de la sesión actual
@@ -372,4 +373,89 @@ public class AuthController {
 
         return response;
     }
+
+    @GetMapping("/eventos/nuevo")
+    public String mostrarFormularioNuevoEvento(Model model) {
+        model.addAttribute("evento", new Evento());
+        model.addAttribute("pageTitle", "Crear Nuevo Evento");
+        return "formulario-evento";
+    }
+
+    @PostMapping("/eventos/guardar")
+    public String guardarEvento(@ModelAttribute("evento") Evento evento) {
+        eventoService.guardarEvento(evento);
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/eventos/editar/{id}")
+    public String mostrarFormularioEditarEvento(@PathVariable Long id, Model model) {
+        Evento evento = eventoService.obtenerEventoPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID de Evento inválido: " + id));
+        model.addAttribute("evento", evento);
+        model.addAttribute("pageTitle", "Editar Evento");
+        return "formulario-evento";
+    }
+
+    @GetMapping("/eventos/eliminar/{id}")
+    public String eliminarEvento(@PathVariable Long id) {
+        eventoService.desactivarEvento(id); // Usamos tu método de borrado suave
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/registro")
+    public String mostrarFormularioRegistro(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "registro"; // Nombre del nuevo archivo HTML
+    }
+
+    @PostMapping("/registro")
+    public String procesarRegistro(@ModelAttribute("usuario") Usuario usuario, Model model) {
+        // 1. Verificar si el email ya está en uso
+        if (usuarioService.emailYaExiste(usuario.getEmail())) {
+            model.addAttribute("error", "El correo electrónico ya está registrado.");
+            return "registro"; // Volver al formulario con un mensaje de error
+        }
+
+        // 2. Guardar el nuevo usuario en la base de datos (MariaDB)
+        usuarioService.guardarUsuario(usuario);
+
+        // Opcional pero recomendado: Crear el nodo del usuario en Neo4j inmediatamente
+        neo4jDirectService.crearOActualizarNodoUsuario(usuario);
+
+        // 3. Redirigir a la página de login con un mensaje de éxito
+        return "redirect:/?exito=true";
+    }
+
+    @GetMapping("/api/usuarios/buscar")
+    @ResponseBody
+    public List<Usuario> buscarUsuarios(@RequestParam("q") String q, HttpSession session) {
+        Usuario usuarioActual = (Usuario) session.getAttribute("usuario");
+        if (usuarioActual == null || q == null || q.trim().isEmpty()) {
+            return new ArrayList<>(); // Devuelve lista vacía si no hay búsqueda o sesión
+        }
+        return usuarioService.buscarPosiblesAmigos(usuarioActual.getId(), q.trim());
+    }
+
+    @PostMapping("/api/amigos/agregar/{amigoId}")
+    @ResponseBody
+    public Map<String, Object> agregarAmigo(@PathVariable Long amigoId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuarioActual = (Usuario) session.getAttribute("usuario");
+
+        if (usuarioActual == null) {
+            response.put("success", false);
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            neo4jDirectService.crearAmistad(usuarioActual.getId(), amigoId);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
 }

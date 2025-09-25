@@ -1,13 +1,15 @@
 package myPacket.parcial_2.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import myPacket.parcial_2.model.Evento;
-import myPacket.parcial_2.repository.jpa.EventoRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import myPacket.parcial_2.model.Evento;
+import myPacket.parcial_2.repository.jpa.EventoRepository;
 
 @Service
 public class EventoService {
@@ -86,6 +88,7 @@ public class EventoService {
             eventoRepository.save(evento);
         }
     }
+
     
     // Inicializar eventos de prueba
     public void inicializarEventosPrueba() {
