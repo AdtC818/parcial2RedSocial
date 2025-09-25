@@ -10,6 +10,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -372,4 +374,33 @@ public class AuthController {
 
         return response;
     }
+
+      @GetMapping("/eventos/nuevo")
+    public String mostrarFormularioNuevoEvento(Model model) {
+        model.addAttribute("evento", new Evento());
+        model.addAttribute("pageTitle", "Crear Nuevo Evento");
+        return "formulario-evento";
+    }
+
+    @PostMapping("/eventos/guardar")
+    public String guardarEvento(@ModelAttribute("evento") Evento evento) {
+        eventoService.guardarEvento(evento);
+        return "redirect:/dashboard";
+    }
+    
+    @GetMapping("/eventos/editar/{id}")
+    public String mostrarFormularioEditarEvento(@PathVariable Long id, Model model) {
+        Evento evento = eventoService.obtenerEventoPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID de Evento inválido: " + id));
+        model.addAttribute("evento", evento);
+        model.addAttribute("pageTitle", "Editar Evento");
+        return "formulario-evento";
+    }
+
+    @GetMapping("/eventos/eliminar/{id}")
+    public String eliminarEvento(@PathVariable Long id) {
+        eventoService.desactivarEvento(id); // Usamos tu método de borrado suave
+        return "redirect:/dashboard";
+    }
+
 }
