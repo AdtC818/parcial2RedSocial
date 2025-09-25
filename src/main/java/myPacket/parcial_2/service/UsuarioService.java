@@ -177,4 +177,12 @@ public class UsuarioService {
             }
         });
     }
+
+    public List<Usuario> buscarPosiblesAmigos(Long usuarioId, String searchTerm) {
+    List<Long> amigoIds = neo4jDirectService.obtenerIdsDeAmigos(usuarioId);
+    if (amigoIds.isEmpty()) {
+        amigoIds.add(-1L); 
+    }
+    return usuarioRepository.findByNombreContainingIgnoreCaseAndIdNotAndIdNotIn(searchTerm, usuarioId, amigoIds);
+}
 }

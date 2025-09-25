@@ -36,8 +36,18 @@
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                             </div>
-                        </form>
+                        </form>     
+                                <hr>
+                                <div class="text-center">
+                                    <small class="text-muted">¿No tienes una cuenta? <a href="/registro">Regístrate aquí</a></small>
+                                </div>
+                            </div>
+                        </div>
                         
+                        <div th:if="${param.exito}" class="alert alert-success mt-3 text-center">
+                            ¡Te has registrado con éxito! Por favor, inicia sesión.
+                        </div>
+                                
                         <!-- Usuarios de prueba -->
                         <hr>
                         <div class="text-center">
