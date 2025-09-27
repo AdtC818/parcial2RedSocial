@@ -55,6 +55,14 @@
             border: none;
             color: #000;
         }
+        .badge-sql {
+            background-color: var(--pastel-pink);
+            color: #000;
+        }
+        .badge-mongo {
+            background-color: var(--pastel-aqua);
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -96,24 +104,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="usuario : ${usuariosDocument}">
-                        <td th:text="${usuario.nombre}"></td>
-                        <td th:text="${usuario.email}"></td>
-                        <td>
-                            <a th:href="@{'/usuariosDocument/editar/' + ${usuario.id}}" 
-                               class="btn btn-warning btn-sm me-2">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a th:href="@{'/usuariosDocument/eliminar/' + ${usuario.id}}" 
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(usuariosDocument)}">
-                        <td colspan="3" class="text-muted">No hay usuarios registrados</td>
-                    </tr>
+                        <tr th:each="usuario : ${usuariosDocument}">
+                            <td th:text="${usuario.nombre}"></td>
+                            <td th:text="${usuario.email}"></td>
+                            <td>
+                                <a th:href="@{'/usuariosDocument/editar/' + ${usuario.origen} + '/' + ${usuario.id}}" 
+                                   class="btn btn-warning btn-sm me-2">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{'/usuariosDocument/eliminar/' + ${usuario.origen} + '/' + ${usuario.id}}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usuariosDocument)}">
+                            <td colspan="4" class="text-muted">No hay usuarios registrados</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
