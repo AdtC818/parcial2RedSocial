@@ -1,8 +1,9 @@
 package myPacket.parcial_2.model;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.List;
 
 @Document(collection = "usuario_hobbies")
 public class UsuarioHobbies {
@@ -10,7 +11,7 @@ public class UsuarioHobbies {
     @Id
     private String id;
     
-    private Long usuarioId; // Referencia al usuario en MariaDB
+    private Long usuarioId; 
     private List<String> hobbies;
     
     public UsuarioHobbies() {
@@ -21,7 +22,7 @@ public class UsuarioHobbies {
         this.hobbies = hobbies;
     }
     
-    // Getters y Setters
+  
     public String getId() {
         return id;
     }

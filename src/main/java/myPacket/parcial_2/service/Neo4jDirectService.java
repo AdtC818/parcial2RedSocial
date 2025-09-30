@@ -1,6 +1,7 @@
 package myPacket.parcial_2.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.neo4j.driver.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import myPacket.parcial_2.model.Evento;
 import myPacket.parcial_2.model.UsuarioNeo4j;
 
 @Service
@@ -189,13 +191,110 @@ public class Neo4jDirectService {
     public void crearAmistad(Long idUsuario1, Long idUsuario2) {
         String cypherQuery = "MATCH (u1:Usuario {id: $id1}), (u2:Usuario {id: $id2}) " +
                 "MERGE (u1)-[r:AMIGO_DE]->(u2) " +
-                "MERGE (u2)-[:AMIGO_DE]->(u1)"; // Crea la amistad en ambas direcciones
+                "MERGE (u2)-[:AMIGO_DE]->(u1)";
 
         try (Session session = driver.session()) {
             session.run(cypherQuery, Map.of("id1", idUsuario1, "id2", idUsuario2));
             System.out.println("Amistad creada entre usuario " + idUsuario1 + " y " + idUsuario2);
         } catch (Exception e) {
             System.out.println("Error creando amistad: " + e.getMessage());
+        }
+    }
+
+    public void crearRelacionAsistencia(Long usuarioId, Long eventoId) {
+        if (driver == null || !verificarConexion()) {
+            throw new IllegalStateException("No se puede conectar a Neo4j.");
+        }
+
+        String cypherQuery = "MATCH (u:Usuario {id: $usuarioId}), (e:Evento {id: $eventoId}) " +
+                "MERGE (u)-[r:ASISTE_A]->(e)";
+
+        try (Session session = driver.session()) {
+            Map<String, Object> params = Map.of("usuarioId", usuarioId, "eventoId", eventoId);
+            session.run(cypherQuery, params);
+            System.out.println("Relación de asistencia creada para usuario " + usuarioId + " al evento " + eventoId);
+        } catch (Exception e) {
+            System.out.println("Error creando relación de asistencia: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public List<UsuarioNeo4j> obtenerAmigosQueAsistenAEvento(Long usuarioId, Long eventoId) {
+        List<UsuarioNeo4j> amigosQueAsisten = new ArrayList<>();
+        String cypherQuery = "MATCH (u:Usuario {id: $usuarioId})-[:AMIGO_DE]->(amigo:Usuario), " +
+                "      (amigo)-[:ASISTE_A]->(e:Evento {id: $eventoId}) " +
+                "RETURN amigo";
+
+        try (Session session = driver.session()) {
+            Result result = session.run(cypherQuery, Map.of("usuarioId", usuarioId, "eventoId", eventoId));
+
+            while (result.hasNext()) {
+                var record = result.next();
+                var amigoNode = record.get("amigo").asNode();
+
+                amigosQueAsisten.add(new UsuarioNeo4j(
+                        amigoNode.get("id").asLong(),
+                        amigoNode.get("nombre").asString(),
+                        amigoNode.get("email").asString()));
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo amigos que asisten al evento: " + e.getMessage());
+        }
+        return amigosQueAsisten;
+    }
+
+    public void crearOActualizarNodoEvento(Evento evento) {
+        if (driver == null || !verificarConexion()) {
+            System.out.println("No se pudo crear el nodo de evento en Neo4j, no hay conexión.");
+            return;
+        }
+
+        String cypherQuery = "MERGE (e:Evento {id: $id}) " +
+                "SET e.titulo = $titulo, e.categoria = $categoria";
+
+        try (Session session = driver.session()) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", evento.getId());
+            params.put("titulo", evento.getTitulo());
+            params.put("categoria", evento.getCategoria());
+
+            session.run(cypherQuery, params);
+            System.out.println("Nodo de Evento creado/actualizado en Neo4j con ID: " + evento.getId());
+        } catch (Exception e) {
+            System.out.println("Error al crear/actualizar nodo de evento en Neo4j: " + e.getMessage());
+        }
+    }
+
+    public List<Long> obtenerIdsDeEventosAsistidos(Long usuarioId) {
+        List<Long> eventoIds = new ArrayList<>();
+        String cypherQuery = "MATCH (:Usuario {id: $usuarioId})-[:ASISTE_A]->(e:Evento) RETURN e.id as id";
+
+        try (Session session = driver.session()) {
+            Result result = session.run(cypherQuery, Map.of("usuarioId", usuarioId));
+            while (result.hasNext()) {
+                eventoIds.add(result.next().get("id").asLong());
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo IDs de eventos asistidos: " + e.getMessage());
+        }
+        return eventoIds;
+    }
+
+    public void eliminarRelacionAsistencia(Long usuarioId, Long eventoId) {
+        if (driver == null || !verificarConexion()) {
+            throw new IllegalStateException("No se puede conectar a Neo4j.");
+        }
+
+        String cypherQuery = "MATCH (u:Usuario {id: $usuarioId})-[r:ASISTE_A]->(e:Evento {id: $eventoId}) " +
+                "DELETE r";
+
+        try (Session session = driver.session()) {
+            Map<String, Object> params = Map.of("usuarioId", usuarioId, "eventoId", eventoId);
+            session.run(cypherQuery, params);
+            System.out.println("Relación de asistencia eliminada para usuario " + usuarioId + " al evento " + eventoId);
+        } catch (Exception e) {
+            System.out.println("Error eliminando relación de asistencia: " + e.getMessage());
+            throw e;
         }
     }
 }

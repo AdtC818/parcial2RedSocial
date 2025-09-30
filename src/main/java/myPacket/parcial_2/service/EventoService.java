@@ -15,10 +15,12 @@ import myPacket.parcial_2.repository.jpa.EventoRepository;
 public class EventoService {
     
     private final EventoRepository eventoRepository;
+    private final Neo4jDirectService neo4jDirectService;
     
     @Autowired
-    public EventoService(EventoRepository eventoRepository) {
+    public EventoService(EventoRepository eventoRepository,  Neo4jDirectService neo4jDirectService) {
         this.eventoRepository = eventoRepository;
+        this.neo4jDirectService = neo4jDirectService;
     }
     
     // Obtener todos los eventos activos
@@ -66,7 +68,11 @@ public class EventoService {
     
     // Guardar evento
     public Evento guardarEvento(Evento evento) {
-        return eventoRepository.save(evento);
+        Evento eventoGuardado = eventoRepository.save(evento);
+        neo4jDirectService.crearOActualizarNodoEvento(eventoGuardado);
+        
+        return eventoGuardado;
+
     }
     
     // Obtener todas las categorías disponibles

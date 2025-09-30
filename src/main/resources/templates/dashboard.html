@@ -390,7 +390,6 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fas fa-users me-2"></i>Red Social UPTC</a>
@@ -428,28 +427,35 @@
                                 onclick="mostrarSeccion('eventos', event)">
                                 <i class="fas fa-calendar-alt me-2"></i>Eventos
                             </a>
-                            <a href="/usuariosDocument" class="list-group-item list-group-item-action">
-    <i class="fas fa-users me-2"></i>Usuarios Document
-</a>
-<a href="#buscar-amigos" class="list-group-item list-group-item-action"
-   onclick="mostrarSeccion('buscar-amigos', event)">
-    <i class="fas fa-search me-2"></i>Buscar Amigos
-</a>
+                            <a href="#buscar-amigos" class="list-group-item list-group-item-action"
+                            onclick="mostrarSeccion('buscar-amigos', event)">
+                                <i class="fas fa-search me-2"></i>Buscar Amigos
+                            </a>
 
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Contenido principal -->
             <div class="col-md-9">
-                <!-- Sección Amigos -->
                 <div id="seccion-amigos" class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-project-diagram me-2"></i>Red de Amigos</h5>
                         <button class="btn btn-primary btn-sm" onclick="cargarGrafoAmigos()">
                             <i class="fas fa-sync-alt me-2"></i>Actualizar Conexiones
                         </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="filtro-eventos-amigos" class="form-label fw-bold">
+                                    <i class="fas fa-filter me-1"></i>Filtrar amigos por evento al que asisten:
+                                </label>
+                                <select id="filtro-eventos-amigos" class="form-select" onchange="filtrarAmigosPorEvento()">
+                                    <option value="">-- Mostrar todos los amigos --</option>
+                                    </select>
+                    </div>
+                    </div>
                     </div>
                     <div class="card-body">
                         <div id="loading-amigos" class="text-center d-none">
@@ -468,7 +474,6 @@
                     </div>
                 </div>
                 
-                <!-- Sección Hobbies -->
                 <div id="seccion-hobbies" class="card" style="display: none;">
                     <div class="card-header">
                         <h5><i class="fas fa-palette me-2"></i>Red de Amigos por Hobbies</h5>
@@ -528,7 +533,6 @@
                     </div>
                 </div>
                 
-                <!-- Sección Eventos -->
                 <div id="seccion-eventos" class="card" style="display: none;">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-calendar-alt me-2"></i>Eventos Disponibles</h5>
@@ -543,7 +547,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filtros de eventos -->
                         <div class="event-filters">
                             <div class="row">
                                 <div class="col-md-4">
@@ -580,7 +583,6 @@
                             </div>
                         </div>
                         
-                        <!-- Estadísticas de eventos -->
                         <div id="eventos-stats" class="row mb-4" style="display: none;">
                             <div class="col-md-3">
                                 <div class="stats-card">
@@ -624,36 +626,34 @@
                     </div>
                 </div>
 
-                <!-- Sección Buscar Amigos -->
-                <div id="seccion-buscar-amigos" class="card" style="display: none;">
-    <div class="card-header">
-        <h5><i class="fas fa-search me-2"></i>Encontrar Nuevos Amigos</h5>
-    </div>
-    <div class="card-body">
-        <div class="input-group mb-4">
-            <input type="text" id="termino-busqueda" class="form-control" 
-                   placeholder="Buscar por nombre...">
-            <button class="btn btn-primary" onclick="buscarAmigos()">Buscar</button>
-        </div>
-        
-        <div id="resultados-busqueda">
-            <div class="alert alert-info">
-                Escribe un nombre en la barra de búsqueda para encontrar usuarios.
+                        <div id="seccion-buscar-amigos" class="card" style="display: none;">
+            <div class="card-header">
+                <h5><i class="fas fa-search me-2"></i>Encontrar Nuevos Amigos</h5>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-4">
+                    <input type="text" id="termino-busqueda" class="form-control" 
+                        placeholder="Buscar por nombre...">
+                    <button class="btn btn-primary" onclick="buscarAmigos()">Buscar</button>
+                </div>
+                
+                <div id="resultados-busqueda">
+                    <div class="alert alert-info">
+                        Escribe un nombre en la barra de búsqueda para encontrar usuarios.
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-<!-- Sección Usuarios -->
-<div id="seccion-usuarios" class="card" style="display: none;">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5><i class="fas fa-users me-2"></i>Gestión de Usuarios</h5>
-        <a href="/usuariosDocument/nuevo" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-2"></i>Nuevo Usuario
-        </a>
-    </div>
+        <div id="seccion-usuarios" class="card" style="display: none;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-users me-2"></i>Gestión de Usuarios</h5>
+                <a href="/usuariosDocument/nuevo" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-2"></i>Nuevo Usuario
+                </a>
+            </div>
     <div class="card-body">
         <div th:if="${usuariosDocument != null}">
             <table class="table table-striped">
@@ -686,7 +686,6 @@
     </div>
 </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
@@ -697,26 +696,23 @@
         function mostrarSeccion(seccion, event) {
             if (event && event.preventDefault) event.preventDefault();
             
-            // Ocultar todas las secciones
             document.getElementById('seccion-amigos').style.display = 'none';
             document.getElementById('seccion-hobbies').style.display = 'none';
             document.getElementById('seccion-eventos').style.display = 'none';
             document.getElementById('seccion-buscar-amigos').style.display = 'none';
             
-            // Mostrar la sección seleccionada
             const targetId = 'seccion-' + seccion;
             const targetEl = document.getElementById(targetId);
             if (targetEl) targetEl.style.display = 'block';
             currentSection = seccion;
             
-            // Actualizar pestañas activas
             document.querySelectorAll('.list-group-item').forEach(item => {
                 item.classList.remove('active');
             });
             if (event && event.currentTarget) event.currentTarget.classList.add('active');
             
-            // Cargar datos según la sección
             if (seccion === 'amigos') {
+                cargarEventosParaFiltro();
                 setTimeout(() => cargarGrafoAmigos(), 100);
             } else if (seccion === 'hobbies') {
                 setTimeout(() => cargarHobbiesDisponibles(), 100);
@@ -743,30 +739,81 @@
             return name.split(' ').map(n => n[0] || '').join('').slice(0, 3).toUpperCase();
         }
 
+
+        function cancelarAsistenciaAEvento(eventoId, boton) {
+            boton.disabled = true;
+            boton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Cancelando...`;
+
+            fetch(`/api/eventos/${eventoId}/cancelar`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        boton.className = "btn btn-success w-100";
+                        boton.innerHTML = `<i class="fas fa-check-circle me-1"></i> Confirmar Asistencia`;
+                        boton.onclick = () => asistirAEvento(eventoId, boton); // ¡Importante! Cambiamos la acción del clic
+                        boton.disabled = false;
+                    } else {
+                        alert("Error al cancelar la asistencia: " + data.error);
+                        boton.className = "btn btn-secondary w-100";
+                        boton.innerHTML = `<i class="fas fa-times-circle me-1"></i> Cancelar Asistencia`;
+                        boton.disabled = false;
+                    }
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    boton.disabled = false;
+                });
+        }
+
+
+        function asistirAEvento(eventoId, boton) {
+            boton.disabled = true;
+            boton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Confirmando...`;
+
+            fetch(`/api/eventos/${eventoId}/asistir`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        boton.className = "btn btn-info w-100"; 
+                        boton.innerHTML = `<i class="fas fa-star"></i> ¡Asistirás!`;
+                    } else {
+                        boton.innerHTML = `Error al confirmar`;
+                        boton.className = "btn btn-danger w-100";
+                        setTimeout(() => { 
+                            boton.disabled = false;
+                            boton.className = "btn btn-success w-100";
+                            boton.innerHTML = `<i class="fas fa-check-circle me-1"></i> Confirmar Asistencia`;
+                        }, 2000);
+                    }
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    boton.disabled = false; 
+                });
+        }
+
         function createGradients(svg) {
             const defs = svg.append("defs");
             
-            // Gradiente pastel para usuario actual
+            
             const userGradient = defs.append("linearGradient")
                 .attr("id", "userGradient");
             userGradient.append("stop")
                 .attr("offset", "0%")
-                .attr("stop-color", "#FFB3BA"); // Rosa pastel
+                .attr("stop-color", "#FFB3BA"); 
             userGradient.append("stop")
                 .attr("offset", "100%")
-                .attr("stop-color", "#FFDFBA"); // Durazno pastel
+                .attr("stop-color", "#FFDFBA"); 
             
-            // Gradiente pastel para amigos
             const friendGradient = defs.append("linearGradient")
                 .attr("id", "friendGradient");
             friendGradient.append("stop")
                 .attr("offset", "0%")
-                .attr("stop-color", "#7DD3FC"); // Aqua pastel
+                .attr("stop-color", "#7DD3FC"); 
             friendGradient.append("stop")
                 .attr("offset", "100%")
-                .attr("stop-color", "#A5D6A7"); // Lima pastel
+                .attr("stop-color", "#A5D6A7"); 
             
-            // Gradiente para enlaces
             const linkGradient = defs.append("linearGradient")
                 .attr("id", "linkGradient");
             linkGradient.append("stop")
@@ -778,10 +825,75 @@
                 .attr("stop-color", "#A5D6A7")
                 .attr("stop-opacity", 0.6);
         }
+
+  
+function filtrarAmigosPorEvento() {
+    const eventoId = document.getElementById('filtro-eventos-amigos').value;
+
+    if (!eventoId) {
+        cargarGrafoAmigos();
+        return;
+    }
+
+    mostrarLoading('amigos', true);
+    
+    fetch(`/api/amigos/filtrar-por-evento?eventoId=${eventoId}`)
+        .then(response => response.json())
+        .then(data => {
+            mostrarLoading('amigos', false);
+            
+            if (data && data.success) {
+               
+                crearGrafoAmigos(data); 
+                
+                actualizarInfoAmigos(data);
+            } else {
+                document.getElementById('amigos-info').innerHTML = 
+                    `<div class="alert alert-warning">Error al filtrar: ${data.error || 'Respuesta inválida'}</div>`;
+            }
+        })
+        .catch(error => {
+            mostrarLoading('amigos', false);
+            console.error("Error al filtrar amigos:", error);
+        });
+}
+
+        function cargarEventosParaFiltro() {
+            fetch('/api/eventos')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta de la red no fue exitosa');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        const select = document.getElementById('filtro-eventos-amigos');
+                        if (!select) return; 
+
+                        const selectedValue = select.value;
+                        
+                        select.length = 1; 
+                        
+                        data.eventos.forEach(evento => {
+                            const option = document.createElement('option');
+                            option.value = evento.id;
+                            option.textContent = evento.titulo;
+                            select.appendChild(option);
+                        });
+                        
+                        select.value = selectedValue;
+
+                    } else {
+                        console.error("Error en la respuesta de la API al cargar eventos para filtro:", data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en fetch al cargar eventos para filtro:', error);
+                });
+        }
         
-        /**
-         * --- GRAFO AMIGOS ---
-         */
+        
         function cargarGrafoAmigos() {
             mostrarLoading('amigos', true);
             
@@ -961,7 +1073,6 @@ function agregarAmigo(amigoId, boton) {
                 .style("fill", "#2d3436")
                 .text(d => getInitials(d.name));
             
-            // Nombre debajo del círculo
             nodeGroup.append("text")
                 .attr("class", "node-label")
                 .attr("y", 55)
@@ -969,11 +1080,9 @@ function agregarAmigo(amigoId, boton) {
                 .style("font-weight", d => d.isCurrentUser ? "bold" : "600")
                 .text(d => d.name);
             
-            // Tooltip con email
             nodeGroup.append("title")
                 .text(d => d.email ? `${d.name}\n${d.email}` : d.name);
             
-            // Funciones de arrastre
             function dragstarted(event, d) {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
                 d.fx = d.x;
@@ -991,7 +1100,6 @@ function agregarAmigo(amigoId, boton) {
                 d.fy = null;
             }
             
-            // Actualizar posiciones
             simulation.on("tick", () => {
                 link
                     .attr("x1", d => d.source.x)
@@ -1044,9 +1152,7 @@ function agregarAmigo(amigoId, boton) {
             document.getElementById('amigos-info').innerHTML = info;
         }
         
-        /**
-         * --- GRAFO HOBBIES ---
-         */
+       
         function cargarHobbiesDisponibles() {
             fetch('/api/hobbies-disponibles')
                 .then(response => response.json())
@@ -1152,14 +1258,12 @@ function agregarAmigo(amigoId, boton) {
                 return;
             }
             
-            // Configurar simulación
             const simulation = d3.forceSimulation(nodes)
                 .force("link", d3.forceLink(links).id(d => d.id).distance(180))
                 .force("charge", d3.forceManyBody().strength(-500))
                 .force("center", d3.forceCenter(width / 2, height / 2))
                 .force("collision", d3.forceCollide().radius(60));
             
-            // Crear enlaces
             const link = svg.append("g")
                 .attr("class", "links")
                 .selectAll("line")
@@ -1167,7 +1271,6 @@ function agregarAmigo(amigoId, boton) {
                 .join("line")
                 .attr("class", "link");
             
-            // Crear grupos de nodos
             const nodeGroup = svg.append("g")
                 .attr("class", "nodes")
                 .selectAll("g")
@@ -1303,33 +1406,37 @@ function agregarAmigo(amigoId, boton) {
             document.getElementById('hobbies-info').innerHTML = info;
         }
         
-        /**
-         * --- EVENTOS ---
-         */
-        function cargarEventos() {
-            mostrarLoading('eventos', true);
-            
-            fetch('/api/eventos')
-                .then(response => response.json())
-                .then(data => {
-                    mostrarLoading('eventos', false);
-                    if (data && data.success) {
-                        eventosActuales = data.eventos || [];
-                        mostrarEventos(eventosActuales);
-                        actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
-                        document.getElementById('eventos-stats').style.display = 'block';
-                    } else {
-                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
-                        document.getElementById('eventos-container').innerHTML =
-                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
-                    }
-                })
-                .catch(error => {
-                    mostrarLoading('eventos', false);
-                    document.getElementById('eventos-container').innerHTML =
-                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando eventos: ${error}</div>`;
-                });
-        }
+        
+function cargarEventos() {
+    mostrarLoading('eventos', true);
+
+    const todosEventosPromise = fetch('/api/eventos').then(res => res.json());
+    const misEventosIdsPromise = fetch('/api/mis-eventos-ids').then(res => res.json());
+
+    Promise.all([todosEventosPromise, misEventosIdsPromise])
+        .then(([dataTodos, dataMisIds]) => {
+            mostrarLoading('eventos', false);
+
+            if (dataTodos.success && dataMisIds.success) {
+                eventosActuales = dataTodos.eventos || [];
+                const misEventosIds = new Set(dataMisIds.eventoIds || []); // Usamos un Set para búsquedas rápidas
+
+                mostrarEventos(eventosActuales, misEventosIds); 
+
+                actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
+                document.getElementById('eventos-stats').style.display = 'flex';
+            } else {
+                document.getElementById('eventos-container').innerHTML = 
+                    `<div class="alert alert-warning">Error cargando datos de eventos.</div>`;
+            }
+        })
+        .catch(error => {
+            mostrarLoading('eventos', false);
+            console.error("Error en Promise.all de eventos:", error);
+            document.getElementById('eventos-container').innerHTML = 
+                `<div class="alert alert-danger">Error de red al cargar eventos.</div>`;
+        });
+}
         
         function cargarCategorias() {
             fetch('/api/eventos/categorias')
@@ -1403,97 +1510,103 @@ function agregarAmigo(amigoId, boton) {
             actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
         }
         
-        function mostrarEventos(eventos) {
-            const container = document.getElementById('eventos-container');
-            
-            if (!eventos || eventos.length === 0) {
-                container.innerHTML = `
-                    <div class="no-events">
-                        <i class="fas fa-calendar-times"></i>
-                        <h4>No se encontraron eventos</h4>
-                        <p>No hay eventos disponibles con los filtros aplicados.</p>
-                    </div>
+        function mostrarEventos(eventos, misEventosIds) { // <-- CAMBIO 1: Acepta un nuevo parámetro
+    const container = document.getElementById('eventos-container');
+    
+    if (!eventos || eventos.length === 0) {
+        container.innerHTML = `
+            <div class="no-events">
+                <i class="fas fa-calendar-times"></i>
+                <h4>No se encontraron eventos</h4>
+                <p>No hay eventos disponibles con los filtros aplicados.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="row">';
+    
+    eventos.forEach(evento => {
+        const fechaEvento = new Date(evento.fechaEvento);
+        const fechaFormateada = fechaEvento.toLocaleDateString('es-CO', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        });
+        const horaFormateada = fechaEvento.toLocaleTimeString('es-CO', {
+            hour: '2-digit', minute: '2-digit'
+        });
+        
+        const esGratis = !evento.precio || evento.precio === 0;
+        const precioTexto = esGratis ? 'GRATIS' : `${evento.precio.toLocaleString('es-CO')}`;
+        const precioClass = esGratis ? 'gratis' : '';
+
+            let botonAsistenciaHtml = '';
+            if (misEventosIds.has(evento.id)) {
+                botonAsistenciaHtml = `
+                    <button id="btn-asistir-${evento.id}" class="btn btn-secondary w-100" onclick="cancelarAsistenciaAEvento(${evento.id}, this)">
+                        <i class="fas fa-times-circle me-1"></i> Cancelar Asistencia
+                    </button>
                 `;
-                return;
+            } else {
+                botonAsistenciaHtml = `
+                    <button id="btn-asistir-${evento.id}" class="btn btn-success w-100" onclick="asistirAEvento(${evento.id}, this)">
+                        <i class="fas fa-check-circle me-1"></i> Confirmar Asistencia
+                    </button>
+                `;
             }
-            
-            let html = '<div class="row">';
-            
-            eventos.forEach(evento => {
-                const fechaEvento = new Date(evento.fechaEvento);
-                const fechaFormateada = fechaEvento.toLocaleDateString('es-CO', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-                const horaFormateada = fechaEvento.toLocaleTimeString('es-CO', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                const esGratis = !evento.precio || evento.precio === 0;
-                const precioTexto = esGratis ? 'GRATIS' : `${evento.precio.toLocaleString('es-CO')}`;
-                const precioClass = esGratis ? 'gratis' : '';
-                
-                html += `
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="event-card card h-100">
-                            <div class="position-relative">
-                                <img src="${evento.imagenUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500'}" 
-                                     class="event-image" alt="${evento.titulo}">
-                                <div class="event-category">${evento.categoria || 'General'}</div>
-                                <div class="event-price ${precioClass}">${precioTexto}</div>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title mb-3">${evento.titulo}</h5>
-                                <p class="event-date mb-2">
-                                    <i class="fas fa-calendar me-2"></i>
-                                    ${fechaFormateada} a las ${horaFormateada}
-                                </p>
-                                <p class="event-location mb-2">
-                                    <i class="fas fa-map-marker-alt me-2"></i>
-                                    ${evento.lugar}
-                                </p>
-                                <p class="event-organizer mb-3">
-                                    <i class="fas fa-user-tie me-2"></i>
-                                    ${evento.organizador}
-                                </p>
-                                <p class="card-text flex-grow-1 mb-3">
-                                    ${evento.descripcion ? (evento.descripcion.length > 150 ? 
-                                        evento.descripcion.substring(0, 150) + '...' : evento.descripcion) : 
-                                        'Sin descripción disponible'}
-                                </p>
-                               // dentro de la función mostrarEventos, reemplaza el div con la clase "mt-auto"
-
-                            <div class="mt-auto">
-                                ${evento.capacidadMaxima ? 
-                                    `<small class="text-muted d-block mb-2">
-                                        <i class="fas fa-users me-1"></i>
-                                        Capacidad máxima: ${evento.capacidadMaxima} personas
-                                    </small>` : ''
-                                }
-
+        
+        html += `
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="event-card card h-100">
+                    <div class="position-relative">
+                        <img src="${evento.imagenUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500'}" 
+                             class="event-image" alt="${evento.titulo}">
+                        <div class="event-category">${evento.categoria || 'General'}</div>
+                        <div class="event-price ${precioClass}">${precioTexto}</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-3">${evento.titulo}</h5>
+                        <p class="event-date mb-2">
+                            <i class="fas fa-calendar me-2"></i> ${fechaFormateada} a las ${horaFormateada}
+                        </p>
+                        <p class="event-location mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i> ${evento.lugar}
+                        </p>
+                        <p class="event-organizer mb-3">
+                            <i class="fas fa-user-tie me-2"></i> ${evento.organizador}
+                        </p>
+                        <p class="card-text flex-grow-1 mb-3">
+                            ${evento.descripcion ? (evento.descripcion.length > 150 ? 
+                                evento.descripcion.substring(0, 150) + '...' : evento.descripcion) : 
+                                'Sin descripción disponible'}
+                        </p>
+                        
+                        <div class="mt-auto">
+                            ${evento.capacidadMaxima ? 
+                                `<small class="text-muted d-block mb-2">
+                                    <i class="fas fa-users me-1"></i> Capacidad máxima: ${evento.capacidadMaxima} personas
+                                </small>` : ''
+                            }
+                            <!-- CAMBIO 3: Usamos la variable con el botón correcto -->
+                            <div class="d-flex flex-column gap-2">
                                 <div class="btn-group w-100" role="group">
-                                    
-                                    <a href="/eventos/editar/${evento.id}" class="btn btn-light btn-sm">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-
+                                    <a href="/eventos/editar/${evento.id}" class="btn btn-light btn-sm"><i class="fas fa-edit"></i> Editar</a>
                                     <a href="/eventos/eliminar/${evento.id}" class="btn btn-outline-danger btn-sm"
-                                    onclick="return confirm('¿Estás seguro de que quieres eliminar el evento \\'${evento.titulo}\\'?');">
-                                        <i class="fas fa-trash"></i> Eliminar
+                                       onclick="return confirm('¿Estás seguro de que quieres eliminar el evento \\'${evento.titulo}\\'?');">
+                                       <i class="fas fa-trash"></i> Eliminar
                                     </a>
                                 </div>
-                            </div>
+                                ${botonAsistenciaHtml} 
                             </div>
                         </div>
                     </div>
-                `;
-            });
-            
-            html += '</div>';
-            container.innerHTML = html;
-        }
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
         
         function actualizarEstadisticas(total, mostrados, filtros) {
             document.getElementById('total-eventos').textContent = total;
@@ -1503,21 +1616,16 @@ function agregarAmigo(amigoId, boton) {
         }
         
         function verDetallesEvento(eventoId) {
-            // Aquí podrías implementar un modal o redirección para ver detalles
             alert(`Ver detalles del evento ${eventoId}\n(Funcionalidad a implementar)`);
         }
         
-        // Cargar datos iniciales al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar sección amigos al cargar
             mostrarSeccion('amigos', { 
                 preventDefault: () => {}, 
                 currentTarget: document.querySelector('.list-group-item.active') 
             });
 
-            // Hacer que los SVG se redimensionen al cambiar tamaño de ventana
             window.addEventListener('resize', () => {
-                // recargar la sección actual para recalcular tamaños
                 if (currentSection === 'amigos') {
                     cargarGrafoAmigos();
                 } else if (currentSection === 'hobbies') {

@@ -39,13 +39,11 @@ public class AuthController {
         this.eventoService = eventoService;
     }
 
-    // Mostrar página de login
     @GetMapping("/")
     public String mostrarLogin() {
         return "login";
     }
 
-    // Procesar login
     @PostMapping("/login")
     public String procesarLogin(
             @RequestParam String email,
@@ -54,25 +52,21 @@ public class AuthController {
             Model model) {
         Optional<Usuario> usuarioOpt = usuarioService.verificarLogin(email, password);
         if (usuarioOpt.isPresent()) {
-            // Login exitoso
             Usuario usuario = usuarioOpt.get();
             session.setAttribute("usuario", usuario);
             return "redirect:/dashboard";
         } else {
-            // Login fallido
             model.addAttribute("error", "Email o contraseña incorrectos");
             return "login";
         }
     }
 
-    // Mostrar dashboard después del login
     @GetMapping("/dashboard")
     public String mostrarDashboard(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/";
         }
-        // Obtener hobbies del usuario actual
         Optional<UsuarioHobbies> hobbiesOpt = usuarioService.obtenerHobbiesUsuario(usuario.getId());
         model.addAttribute("usuario", usuario);
         if (hobbiesOpt.isPresent()) {
@@ -83,52 +77,38 @@ public class AuthController {
         return "dashboard";
     }
 
-    // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
     }
 
-    // ===== CRUD PARA HOBBIES DEL USUARIO LOGUEADO =====
-    // ===============================================
-
     @PostMapping("/hobbies/agregar")
     public String agregarHobby(@RequestParam String hobby, HttpSession session) {
-        // 1. Obtener el usuario de la sesión actual
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            return "redirect:/"; // Si no hay sesión, redirigir al login
-        }
-
-        // 2. Validar que el hobby no esté vacío
-        if (hobby != null && !hobby.trim().isEmpty()) {
-            // 3. Llamar al servicio para guardar el hobby
-            usuarioService.agregarHobby(usuario.getId(), hobby.trim());
-        }
-
-        // 4. Redirigir de vuelta al dashboard para ver la lista actualizada
-        return "redirect:/dashboard";
-    }
-
-    @PostMapping("/hobbies/eliminar")
-    public String eliminarHobby(@RequestParam String hobby, HttpSession session) {
-        // 1. Obtener el usuario de la sesión actual
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/";
         }
 
-        // 2. Llamar al servicio para eliminar el hobby
-        usuarioService.eliminarHobby(usuario.getId(), hobby);
+        if (hobby != null && !hobby.trim().isEmpty()) {
+            usuarioService.agregarHobby(usuario.getId(), hobby.trim());
+        }
 
-        // 3. Redirigir de vuelta al dashboard
         return "redirect:/dashboard";
     }
 
-    // ===== NUEVAS FUNCIONALIDADES PARA NEO4J =====
+    @PostMapping("/hobbies/eliminar")
+    public String eliminarHobby(@RequestParam String hobby, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/";
+        }
 
-    // API para obtener amigos del usuario logueado
+        usuarioService.eliminarHobby(usuario.getId(), hobby);
+
+        return "redirect:/dashboard";
+    }
+
     @GetMapping("/api/amigos")
     @ResponseBody
     public Map<String, Object> obtenerAmigos(HttpSession session) {
@@ -156,7 +136,6 @@ public class AuthController {
         return response;
     }
 
-    // API para obtener amigos con sus hobbies filtrados
     @GetMapping("/api/amigos-hobbies")
     @ResponseBody
     public Map<String, Object> obtenerAmigosConHobbies(
@@ -187,7 +166,6 @@ public class AuthController {
                     List<String> hobbies = hobbiesOpt.get().getHobbies();
                     amigoData.put("hobbies", hobbies);
 
-                    // Aplicar filtro si se especifica
                     boolean incluir = true;
                     if (filtroHobby != null && !filtroHobby.isEmpty()) {
                         incluir = hobbies.stream()
@@ -199,14 +177,12 @@ public class AuthController {
                     }
                 } else {
                     amigoData.put("hobbies", Arrays.asList("Sin hobbies"));
-                    // Si no hay filtro, incluir amigos sin hobbies
                     if (filtroHobby == null || filtroHobby.isEmpty()) {
                         amigosConHobbies.add(amigoData);
                     }
                 }
             }
 
-            // Agregar información del usuario actual
             Optional<UsuarioHobbies> hobbiesUsuario = usuarioService.obtenerHobbiesUsuario(usuario.getId());
             Map<String, Object> usuarioActual = new HashMap<>();
             usuarioActual.put("id", usuario.getId());
@@ -231,7 +207,6 @@ public class AuthController {
         return response;
     }
 
-    // API para obtener todos los hobbies únicos
     @GetMapping("/api/hobbies-disponibles")
     @ResponseBody
     public Map<String, Object> obtenerHobbiesDisponibles(HttpSession session) {
@@ -247,13 +222,11 @@ public class AuthController {
             List<UsuarioNeo4j> amigos = neo4jDirectService.obtenerAmigos(usuario.getId());
             List<String> todosHobbies = new ArrayList<>();
 
-            // Agregar hobbies del usuario actual
             Optional<UsuarioHobbies> hobbiesUsuario = usuarioService.obtenerHobbiesUsuario(usuario.getId());
             if (hobbiesUsuario.isPresent()) {
                 todosHobbies.addAll(hobbiesUsuario.get().getHobbies());
             }
 
-            // Agregar hobbies de los amigos
             for (UsuarioNeo4j amigo : amigos) {
                 Optional<UsuarioHobbies> hobbiesOpt = usuarioService.obtenerHobbiesUsuario(amigo.getId());
                 if (hobbiesOpt.isPresent()) {
@@ -261,7 +234,6 @@ public class AuthController {
                 }
             }
 
-            // Remover duplicados y ordenar
             List<String> hobbiesUnicos = todosHobbies.stream().distinct().sorted().toList();
 
             response.put("hobbies", hobbiesUnicos);
@@ -275,9 +247,6 @@ public class AuthController {
         return response;
     }
 
-    // ===== NUEVAS FUNCIONALIDADES PARA EVENTOS =====
-
-    // API para obtener todos los eventos
     @GetMapping("/api/eventos")
     @ResponseBody
     public Map<String, Object> obtenerEventos(HttpSession session) {
@@ -302,7 +271,6 @@ public class AuthController {
         return response;
     }
 
-    // API para buscar y filtrar eventos
     @GetMapping("/api/eventos/filtrar")
     @ResponseBody
     public Map<String, Object> filtrarEventos(
@@ -322,7 +290,6 @@ public class AuthController {
         try {
             List<Evento> eventos;
 
-            // Aplicar filtros en orden de prioridad
             if (busqueda != null && !busqueda.trim().isEmpty()) {
                 eventos = eventoService.buscarEventos(busqueda);
             } else if (categoria != null && !categoria.trim().isEmpty()) {
@@ -349,7 +316,6 @@ public class AuthController {
         return response;
     }
 
-    // API para obtener categorías disponibles
     @GetMapping("/api/eventos/categorias")
     @ResponseBody
     public Map<String, Object> obtenerCategorias(HttpSession session) {
@@ -398,31 +364,27 @@ public class AuthController {
 
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id) {
-        eventoService.desactivarEvento(id); // Usamos tu método de borrado suave
+        eventoService.desactivarEvento(id);
         return "redirect:/dashboard";
     }
 
     @GetMapping("/registro")
     public String mostrarFormularioRegistro(Model model) {
         model.addAttribute("usuario", new Usuario());
-        return "registro"; // Nombre del nuevo archivo HTML
+        return "registro";
     }
 
     @PostMapping("/registro")
     public String procesarRegistro(@ModelAttribute("usuario") Usuario usuario, Model model) {
-        // 1. Verificar si el email ya está en uso
         if (usuarioService.emailYaExiste(usuario.getEmail())) {
             model.addAttribute("error", "El correo electrónico ya está registrado.");
-            return "registro"; // Volver al formulario con un mensaje de error
+            return "registro";
         }
 
-        // 2. Guardar el nuevo usuario en la base de datos (MariaDB)
         usuarioService.guardarUsuario(usuario);
 
-        // Opcional pero recomendado: Crear el nodo del usuario en Neo4j inmediatamente
         neo4jDirectService.crearOActualizarNodoUsuario(usuario);
 
-        // 3. Redirigir a la página de login con un mensaje de éxito
         return "redirect:/?exito=true";
     }
 
@@ -431,7 +393,7 @@ public class AuthController {
     public List<Usuario> buscarUsuarios(@RequestParam("q") String q, HttpSession session) {
         Usuario usuarioActual = (Usuario) session.getAttribute("usuario");
         if (usuarioActual == null || q == null || q.trim().isEmpty()) {
-            return new ArrayList<>(); // Devuelve lista vacía si no hay búsqueda o sesión
+            return new ArrayList<>();
         }
         return usuarioService.buscarPosiblesAmigos(usuarioActual.getId(), q.trim());
     }
@@ -454,6 +416,97 @@ public class AuthController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
+    @PostMapping("/api/eventos/{eventoId}/asistir")
+    @ResponseBody
+    public Map<String, Object> asistirAEvento(@PathVariable Long eventoId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            response.put("success", false);
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            // Llama al nuevo método del servicio de Neo4j
+            neo4jDirectService.crearRelacionAsistencia(usuario.getId(), eventoId);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "Error al procesar la solicitud: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("/api/amigos/filtrar-por-evento")
+    @ResponseBody
+    public Map<String, Object> filtrarAmigosPorEvento(@RequestParam Long eventoId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            List<UsuarioNeo4j> amigosFiltrados = neo4jDirectService.obtenerAmigosQueAsistenAEvento(usuario.getId(),
+                    eventoId);
+
+            response.put("amigos", amigosFiltrados);
+            response.put("usuarioActual", Map.of(
+                    "id", usuario.getId(),
+                    "nombre", usuario.getNombre(),
+                    "email", usuario.getEmail()));
+            response.put("success", true);
+
+        } catch (Exception e) {
+            response.put("error", "Error filtrando amigos: " + e.getMessage());
+            response.put("success", false);
+        }
+        return response;
+    }
+
+    @GetMapping("/api/mis-eventos-ids")
+    @ResponseBody
+    public Map<String, Object> obtenerMisEventosIds(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            response.put("success", false);
+            return response;
+        }
+
+        List<Long> misEventosIds = neo4jDirectService.obtenerIdsDeEventosAsistidos(usuario.getId());
+        response.put("success", true);
+        response.put("eventoIds", misEventosIds);
+        return response;
+    }
+
+    @PostMapping("/api/eventos/{eventoId}/cancelar")
+    @ResponseBody
+    public Map<String, Object> cancelarAsistenciaAEvento(@PathVariable Long eventoId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            response.put("success", false);
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            neo4jDirectService.eliminarRelacionAsistencia(usuario.getId(), eventoId);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "Error al procesar la cancelación: " + e.getMessage());
         }
         return response;
     }
