@@ -23,17 +23,14 @@ public class EventoService {
         this.neo4jDirectService = neo4jDirectService;
     }
     
-    // Obtener todos los eventos activos
     public List<Evento> obtenerEventosActivos() {
         return eventoRepository.findByActivoTrueOrderByFechaEventoAsc();
     }
     
-    // Obtener eventos próximos (fecha futura)
     public List<Evento> obtenerEventosProximos() {
         return eventoRepository.findEventosProximos(LocalDateTime.now());
     }
     
-    // Buscar eventos por texto
     public List<Evento> buscarEventos(String busqueda) {
         if (busqueda == null || busqueda.trim().isEmpty()) {
             return obtenerEventosActivos();
@@ -41,7 +38,6 @@ public class EventoService {
         return eventoRepository.buscarEventos(busqueda.trim());
     }
     
-    // Filtrar eventos por categoría
     public List<Evento> filtrarPorCategoria(String categoria) {
         if (categoria == null || categoria.trim().isEmpty()) {
             return obtenerEventosActivos();
@@ -49,7 +45,6 @@ public class EventoService {
         return eventoRepository.findByActivoTrueAndCategoriaOrderByFechaEventoAsc(categoria);
     }
     
-    // Filtrar eventos por tipo de precio
     public List<Evento> filtrarPorPrecio(String tipo) {
         switch (tipo.toLowerCase()) {
             case "gratis":
@@ -61,12 +56,10 @@ public class EventoService {
         }
     }
     
-    // Obtener evento por ID
     public Optional<Evento> obtenerEventoPorId(Long id) {
         return eventoRepository.findById(id);
     }
     
-    // Guardar evento
     public Evento guardarEvento(Evento evento) {
         Evento eventoGuardado = eventoRepository.save(evento);
         neo4jDirectService.crearOActualizarNodoEvento(eventoGuardado);
@@ -75,17 +68,14 @@ public class EventoService {
 
     }
     
-    // Obtener todas las categorías disponibles
     public List<String> obtenerCategorias() {
         return eventoRepository.findCategorias();
     }
     
-    // Contar total de eventos activos
     public long contarEventosActivos() {
         return eventoRepository.countByActivoTrue();
     }
     
-    // Desactivar evento (soft delete)
     public void desactivarEvento(Long id) {
         Optional<Evento> eventoOpt = eventoRepository.findById(id);
         if (eventoOpt.isPresent()) {
@@ -96,7 +86,6 @@ public class EventoService {
     }
 
     
-    // Inicializar eventos de prueba
     public void inicializarEventosPrueba() {
         if (eventoRepository.count() == 0) {
             System.out.println("Creando eventos de prueba...");

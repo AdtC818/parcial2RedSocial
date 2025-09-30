@@ -297,4 +297,21 @@ public class Neo4jDirectService {
             throw e;
         }
     }
+
+    public void eliminarAmistad(Long idUsuario1, Long idUsuario2) {
+        if (driver == null || !verificarConexion()) {
+            throw new IllegalStateException("No se puede conectar a Neo4j.");
+        }
+
+        String cypherQuery = "MATCH (u1:Usuario {id: $id1})-[r1:AMIGO_DE]-(u2:Usuario {id: $id2}) " +
+                "DELETE r1";
+
+        try (Session session = driver.session()) {
+            session.run(cypherQuery, Map.of("id1", idUsuario1, "id2", idUsuario2));
+            System.out.println("Amistad eliminada entre usuario " + idUsuario1 + " y " + idUsuario2);
+        } catch (Exception e) {
+            System.out.println("Error eliminando amistad: " + e.getMessage());
+            throw e;
+        }
+    }
 }

@@ -4,25 +4,24 @@ import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication; // <-- 1. Importa la clase Evento
+import org.springframework.boot.autoconfigure.SpringBootApplication; 
 
 import myPacket.parcial_2.model.Evento;
 import myPacket.parcial_2.service.EventoService;
-import myPacket.parcial_2.service.Neo4jDirectService; // <-- 2. Importa el servicio de Neo4j
-import myPacket.parcial_2.service.UsuarioService; // <-- 3. Importa la clase List
+import myPacket.parcial_2.service.Neo4jDirectService; 
+import myPacket.parcial_2.service.UsuarioService; 
 
 @SpringBootApplication
 public class MonolitoSpringbootApplication implements CommandLineRunner {
     
     private final UsuarioService usuarioService;
     private final EventoService eventoService;
-    private final Neo4jDirectService neo4jDirectService; // <-- 4. AÑADE ESTA LÍNEA
+    private final Neo4jDirectService neo4jDirectService; 
 
-    // 5. AÑADE Neo4jDirectService AL CONSTRUCTOR
     public MonolitoSpringbootApplication(UsuarioService usuarioService, EventoService eventoService, Neo4jDirectService neo4jDirectService) {
         this.usuarioService = usuarioService;
         this.eventoService = eventoService;
-        this.neo4jDirectService = neo4jDirectService; // <-- 6. ASÍGNALO AQUÍ
+        this.neo4jDirectService = neo4jDirectService;
     }
     
     public static void main(String[] args) {
@@ -31,16 +30,12 @@ public class MonolitoSpringbootApplication implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        // Inicializar datos de usuarios y hobbies
         usuarioService.inicializarHobbiesPrueba();
         usuarioService.inicializarUsuariosYAmistades();
         
-        // Inicializar eventos de prueba en MariaDB
         eventoService.inicializarEventosPrueba();
         
-        // ======================================================================
-        // 7. AÑADE EL NUEVO BLOQUE DE SINCRONIZACIÓN AQUÍ 🔄
-        // ======================================================================
+      
         System.out.println("--- Sincronizando eventos existentes de MariaDB a Neo4j ---");
         List<Evento> todosLosEventos = eventoService.obtenerEventosActivos();
         for (Evento evento : todosLosEventos) {

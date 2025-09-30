@@ -511,4 +511,26 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/api/amigos/eliminar/{amigoId}")
+    @ResponseBody
+    public Map<String, Object> eliminarAmigo(@PathVariable Long amigoId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuarioActual = (Usuario) session.getAttribute("usuario");
+
+        if (usuarioActual == null) {
+            response.put("success", false);
+            response.put("error", "Usuario no autenticado");
+            return response;
+        }
+
+        try {
+            neo4jDirectService.eliminarAmistad(usuarioActual.getId(), amigoId);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
 }

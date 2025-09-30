@@ -792,6 +792,37 @@
                 });
         }
 
+
+        function eliminarAmigo(amigoId, boton) {
+            if (!confirm("¿Estás seguro de que quieres eliminar a este amigo?")) {
+                return;
+            }
+
+            const card = boton.closest('.col-md-6'); 
+            boton.disabled = true;
+
+            fetch(`/api/amigos/eliminar/${amigoId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (card) {
+                            card.style.transition = 'opacity 0.5s ease';
+                            card.style.opacity = '0';
+                            setTimeout(() => card.remove(), 500);
+                        }
+                        cargarGrafoAmigos(); 
+                    } else {
+                        alert("Error al eliminar el amigo: " + data.error);
+                        boton.disabled = false;
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert("Ocurrió un error de red. Inténtalo de nuevo.");
+                    boton.disabled = false;
+                });
+        }
+
         function createGradients(svg) {
             const defs = svg.append("defs");
             
@@ -1126,13 +1157,18 @@ function agregarAmigo(amigoId, boton) {
                                     <div class="friend-avatar me-3">
                                         ${getInitials(amigo.nombre)}
                                     </div>
-                                    <div>
-                                        <h6 class="mb-1">${amigo.nombre}</h6>
-                                        <small class="text-muted">
-                                            <i class="fas fa-envelope me-1"></i>
-                                            ${amigo.email || ''}
-                                        </small>
-                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">${amigo.nombre}</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-envelope me-1"></i>
+                                                ${amigo.email || ''}
+                                            </small>
+                                        </div>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="eliminarAmigo(${amigo.id}, this)">
+                                            <i class="fas fa-user-minus"></i>
+                                        </button>
+                                    </div>                              
                                 </div>
                             </div>
                         </div>

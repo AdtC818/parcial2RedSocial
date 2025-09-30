@@ -1,6 +1,11 @@
 package myPacket.parcial_2.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
@@ -22,11 +27,9 @@ public class Usuario {
     @Column(name = "foto_url")
     private String fotoUrl;
     
-    // Constructor vacío
     public Usuario() {
     }
     
-    // Constructor con parámetros
     public Usuario(String email, String password, String nombre, String fotoUrl) {
         this.email = email;
         this.password = password;
@@ -34,7 +37,6 @@ public class Usuario {
         this.fotoUrl = fotoUrl;
     }
     
-    // Getters y Setters
     public Long getId() {
         return id;
     }
