@@ -67,13 +67,15 @@ public class AuthController {
         if (usuario == null) {
             return "redirect:/";
         }
+
+        // Obtener hobbies (tu lógica actual)
         Optional<UsuarioHobbies> hobbiesOpt = usuarioService.obtenerHobbiesUsuario(usuario.getId());
-        model.addAttribute("usuario", usuario);
-        if (hobbiesOpt.isPresent()) {
-            model.addAttribute("hobbies", hobbiesOpt.get().getHobbies());
-        } else {
-            model.addAttribute("hobbies", Arrays.asList("Sin hobbies"));
-        }
+        List<String> hobbiesList = hobbiesOpt.map(UsuarioHobbies::getHobbies).orElse(Arrays.asList("Sin hobbies"));
+
+        // --- CAMBIO: Añadir datos al modelo para Thymeleaf ---
+        model.addAttribute("nombreUsuario", usuario.getNombre());
+        model.addAttribute("hobbiesUsuario", hobbiesList);
+
         return "dashboard";
     }
 
@@ -343,7 +345,7 @@ public class AuthController {
     @GetMapping("/eventos/nuevo")
     public String mostrarFormularioNuevoEvento(Model model) {
         model.addAttribute("evento", new Evento());
-        model.addAttribute("pageTitle", "Crear Nuevo Evento");
+        model.addAttribute("pageTitle", "Crear Nuevo Evento"); // Añadido pageTitle
         return "formulario-evento";
     }
 
@@ -358,7 +360,7 @@ public class AuthController {
         Evento evento = eventoService.obtenerEventoPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID de Evento inválido: " + id));
         model.addAttribute("evento", evento);
-        model.addAttribute("pageTitle", "Editar Evento");
+        model.addAttribute("pageTitle", "Editar Evento"); // Añadido pageTitle
         return "formulario-evento";
     }
 
@@ -532,5 +534,4 @@ public class AuthController {
         }
         return response;
     }
-
 }

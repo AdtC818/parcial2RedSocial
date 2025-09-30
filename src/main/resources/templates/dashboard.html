@@ -6,388 +6,7 @@
     <title>Dashboard - Red Social</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-    <style>
-        /* Colores Pastel */
-        :root {
-            --pastel-aqua-light: #E0F8FF;
-            --pastel-aqua: #B0E6F5;
-            --pastel-aqua-dark: #7DD3FC;
-            --pastel-lime-light: #F0FFF4;
-            --pastel-lime: #C8E6C9;
-            --pastel-lime-dark: #A5D6A7;
-            --pastel-mint: #E8F5E8;
-            --pastel-coral: #FFE4E1;
-            --pastel-lavender: #F0E6FF;
-            --pastel-yellow: #FFF8DC;
-            --pastel-pink: #FFB3E6;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .navbar {
-            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%) !important;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .navbar-brand, .navbar-text, .nav-link {
-            color: #2d3436 !important;
-            font-weight: 600;
-        }
-        
-        .container-fluid {
-            background: transparent;
-            padding: 20px;
-            margin-top: 0;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            margin-bottom: 20px;
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%);
-            color: #2d3436;
-            border-radius: 20px 20px 0 0 !important;
-            border: none;
-            font-weight: 600;
-        }
-        
-        .list-group-item {
-            border: none;
-            border-radius: 15px;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-        }
-        
-        .list-group-item:hover {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            color: #2d3436;
-            transform: translateX(8px);
-            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.3);
-        }
-        
-        .list-group-item.active {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            border: none;
-            color: #2d3436;
-            font-weight: 600;
-        }
-        
-        .btn-primary, .btn-light {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            border: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            color: #2d3436;
-            font-weight: 600;
-        }
-        
-        .btn-primary:hover, .btn-light:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(125, 211, 252, 0.4);
-            background: linear-gradient(135deg, var(--pastel-aqua) 0%, var(--pastel-lime) 100%);
-        }
-        
-        .btn-outline-primary {
-            border: 2px solid var(--pastel-aqua-dark);
-            color: var(--pastel-aqua-dark);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline-primary:hover {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            border-color: var(--pastel-aqua-dark);
-            color: #2d3436;
-        }
-        
-        .node {
-            stroke: #fff;
-            stroke-width: 3px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .node.current-user {
-            fill: url(#userGradient);
-        }
-        
-        .node:not(.current-user) {
-            fill: url(#friendGradient);
-        }
-        
-        .link {
-            stroke: url(#linkGradient);
-            stroke-opacity: 0.7;
-            stroke-width: 3px;
-        }
-        
-        .node-label {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            fill: #2d3436;
-            text-anchor: middle;
-            pointer-events: none;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
-        
-        .node-hobby {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 11px;
-            fill: #636e72;
-            text-anchor: middle;
-            pointer-events: none;
-            font-weight: 500;
-        }
-        
-        .hobby-badge {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            color: #2d3436;
-            border-radius: 15px;
-            padding: 4px 12px;
-            margin: 3px;
-            font-size: 0.85em;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(125, 211, 252, 0.2);
-            display: inline-block;
-        }
-        
-        .hobby-badge.bg-warning {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            color: #856404;
-        }
-        
-        #graph-container,
-        #hobbies-graph-container {
-            border: 2px solid transparent;
-            border-radius: 20px;
-            min-height: 450px;
-            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        #graph-container::before,
-        #hobbies-graph-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(125, 211, 252, 0.1) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 80%, rgba(165, 214, 167, 0.1) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        
-        .friend-card {
-            border: none;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, var(--pastel-mint) 100%);
-            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.15);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .friend-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(125, 211, 252, 0.25);
-        }
-        
-        .friend-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2d3436;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 12px rgba(125, 211, 252, 0.3);
-        }
-        
-        /* Estilos específicos para eventos */
-        .event-card {
-            border: none;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, var(--pastel-coral) 100%);
-            box-shadow: 0 6px 25px rgba(255, 182, 193, 0.2);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            height: 100%;
-            position: relative;
-        }
-        
-        .event-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 35px rgba(255, 182, 193, 0.35);
-        }
-        
-        .event-image {
-            height: 200px;
-            object-fit: cover;
-            width: 100%;
-            border-radius: 20px 20px 0 0;
-            transition: all 0.3s ease;
-        }
-        
-        .event-card:hover .event-image {
-            transform: scale(1.05);
-        }
-        
-        .event-category {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            color: #2d3436;
-            padding: 6px 15px;
-            border-radius: 25px;
-            font-size: 0.8em;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-        }
-
-        .btn-eliminar-hobby {
-            background: none;
-            border: none;
-            color: #2d3436;
-            padding: 0 0 0 5px;
-            margin: 0;
-            line-height: 1;
-            cursor: pointer;
-            font-weight: bold;
-            opacity: 0.6;
-            transition: opacity 0.2s ease;
-        }
-
-        .btn-eliminar-hobby:hover {
-            opacity: 1;
-        }
-        
-        .event-price {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--pastel-yellow);
-            color: #d35400;
-            padding: 6px 12px;
-            border-radius: 25px;
-            font-size: 0.85em;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-        }
-        
-        .event-price.gratis {
-            background: var(--pastel-mint);
-            color: #27ae60;
-        }
-        
-        .event-date {
-            color: var(--pastel-aqua-dark);
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        
-        .event-location {
-            color: #636e72;
-            font-size: 0.85em;
-            font-style: italic;
-        }
-        
-        .event-organizer {
-            color: #74b9ff;
-            font-size: 0.8em;
-            font-weight: 500;
-        }
-        
-        .event-filters {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: var(--pastel-aqua-dark) !important;
-        }
-        
-        .loading-text {
-            background: linear-gradient(135deg, var(--pastel-aqua-dark) 0%, var(--pastel-lime-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 600;
-        }
-        
-        .alert-info {
-            background: linear-gradient(135deg, var(--pastel-aqua-light) 0%, var(--pastel-lime-light) 100%);
-            border: 1px solid var(--pastel-aqua);
-            border-radius: 15px;
-            color: #2d3436;
-        }
-        
-        .form-select, .form-control {
-            border-radius: 12px;
-            border: 2px solid var(--pastel-aqua);
-            transition: all 0.3s ease;
-        }
-        
-        .form-select:focus, .form-control:focus {
-            border-color: var(--pastel-aqua-dark);
-            box-shadow: 0 0 0 0.2rem rgba(125, 211, 252, 0.25);
-        }
-        
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .stats-card {
-            background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--pastel-pink) 100%);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            color: #2d3436;
-            font-weight: 600;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(240, 230, 255, 0.3);
-        }
-        
-        .no-events {
-            text-align: center;
-            padding: 60px 20px;
-            color: #636e72;
-        }
-        
-        .no-events i {
-            font-size: 4em;
-            color: var(--pastel-aqua);
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/dashboard_styles.css"> <!-- Enlace al CSS externo -->
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
@@ -396,7 +15,7 @@
             <div class="navbar-nav ms-auto">
                 <span class="navbar-text me-3">
                     <i class="fas fa-user-circle me-1"></i>
-                    <span th:text="'Hola, ' + ${usuario.nombre}"></span>
+                    <span id="welcome-user-name">Hola, Nombre</span> <!-- Nombre del usuario -->
                 </span>
                 <a class="nav-link" href="/logout">
                     <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
@@ -404,10 +23,8 @@
             </div>
         </div>
     </nav>
-    
     <div class="container-fluid main-content">
         <div class="row">
-            <!-- Sidebar izquierdo -->
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
@@ -416,32 +33,31 @@
                     <div class="card-body">
                         <div class="list-group" role="tablist">
                             <a href="#amigos" class="list-group-item list-group-item-action active"
-                                onclick="mostrarSeccion('amigos', event)">
+                                onclick="dashboardApp.ui.showSection('amigos', event)">
                                 <i class="fas fa-user-friends me-2"></i>Amigos
                             </a>
                             <a href="#hobbies" class="list-group-item list-group-item-action"
-                                onclick="mostrarSeccion('hobbies', event)">
+                                onclick="dashboardApp.ui.showSection('hobbies', event)">
                                 <i class="fas fa-heart me-2"></i>Hobbies
                             </a>
                             <a href="#eventos" class="list-group-item list-group-item-action"
-                                onclick="mostrarSeccion('eventos', event)">
+                                onclick="dashboardApp.ui.showSection('eventos', event)">
                                 <i class="fas fa-calendar-alt me-2"></i>Eventos
                             </a>
                             <a href="#buscar-amigos" class="list-group-item list-group-item-action"
-                            onclick="mostrarSeccion('buscar-amigos', event)">
+                                onclick="dashboardApp.ui.showSection('buscar-amigos', event)">
                                 <i class="fas fa-search me-2"></i>Buscar Amigos
                             </a>
-
                         </div>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-9">
+                <!-- Sección Amigos -->
                 <div id="seccion-amigos" class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-project-diagram me-2"></i>Red de Amigos</h5>
-                        <button class="btn btn-primary btn-sm" onclick="cargarGrafoAmigos()">
+                        <button class="btn btn-primary btn-sm" onclick="dashboardApp.amigos.loadData()">
                             <i class="fas fa-sync-alt me-2"></i>Actualizar Conexiones
                         </button>
                     </div>
@@ -451,11 +67,12 @@
                                 <label for="filtro-eventos-amigos" class="form-label fw-bold">
                                     <i class="fas fa-filter me-1"></i>Filtrar amigos por evento al que asisten:
                                 </label>
-                                <select id="filtro-eventos-amigos" class="form-select" onchange="filtrarAmigosPorEvento()">
+                                <select id="filtro-eventos-amigos" class="form-select" onchange="dashboardApp.amigos.filterByEvent()">
                                     <option value="">-- Mostrar todos los amigos --</option>
-                                    </select>
-                    </div>
-                    </div>
+                                    <!-- Opciones se llenan dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div id="loading-amigos" class="text-center d-none">
@@ -473,43 +90,33 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Sección Hobbies -->
                 <div id="seccion-hobbies" class="card" style="display: none;">
                     <div class="card-header">
                         <h5><i class="fas fa-palette me-2"></i>Red de Amigos por Hobbies</h5>
                         <div class="row mt-3">
                             <div class="col-md-6">
-                            <h6><i class="fas fa-star me-2"></i>Gestionar Mis Hobbies:</h6>
-
-                            <form th:action="@{/hobbies/agregar}" method="post" class="d-flex gap-2 mb-3">
-                                <input type="text" name="hobby" class="form-control form-control-sm" placeholder="Añadir nuevo hobby..." required>
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </form>
-                            
-                            <div class="d-flex flex-wrap align-items-center">
-                                <div th:each="hobby : ${hobbies}" class="hobby-badge d-flex align-items-center me-2 mb-2">
-                                    <span th:text="${hobby}"></span>
-                                    <form th:action="@{/hobbies/eliminar}" method="post" class="ms-2">
-                                        <input type="hidden" name="hobby" th:value="${hobby}">
-                                        <button type="submit" class="btn-eliminar-hobby">
-                                            &times; </button>
-                                    </form>
+                                <h6><i class="fas fa-star me-2"></i>Gestionar Mis Hobbies:</h6>
+                                <form id="form-add-hobby" class="d-flex gap-2 mb-3">
+                                    <input type="text" name="hobby" id="input-hobby" class="form-control form-control-sm" placeholder="Añadir nuevo hobby..." required>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                                <div id="hobbies-list" class="d-flex flex-wrap align-items-center">
+                                    <!-- Hobbies se insertan aquí dinámicamente -->
+                                    <p id="no-hobbies-message" class="text-muted">Aún no tienes hobbies. ¡Añade uno!</p>
                                 </div>
-                                
-                                <p class="text-muted" th:if="${hobbies.isEmpty() or hobbies[0] == 'Sin hobbies'}">
-                                    Aún no tienes hobbies. ¡Añade uno!
-                                </p>
-                            </div>
                             </div>
                             <div class="col-md-6">
                                 <h6><i class="fas fa-filter me-2"></i>Filtrar amigos por hobby:</h6>
                                 <div class="d-flex gap-2">
-                                    <select id="filtro-hobbies" class="form-select form-select-sm" onchange="aplicarFiltroHobbies()">
+                                    <select id="filtro-hobbies" class="form-select form-select-sm" onchange="dashboardApp.hobbies.filterByHobby()">
                                         <option value="">Todos los hobbies</option>
+                                        <!-- Opciones se llenan dinámicamente -->
                                     </select>
-                                    <button class="btn btn-primary btn-sm" onclick="cargarHobbiesDisponibles()">
+                                    <button class="btn btn-primary btn-sm" onclick="dashboardApp.hobbies.loadAvailableHobbies()">
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
                                 </div>
@@ -532,16 +139,16 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Sección Eventos -->
                 <div id="seccion-eventos" class="card" style="display: none;">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-calendar-alt me-2"></i>Eventos Disponibles</h5>
-
                         <div class="btn-group">
                             <a href="/eventos/nuevo" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus me-1"></i>Nuevo Evento
                             </a>
-                            <button class="btn btn-light btn-sm" onclick="cargarEventos()">
+                            <button class="btn btn-light btn-sm" onclick="dashboardApp.eventos.loadData()">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
@@ -553,36 +160,36 @@
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-search me-1"></i>Buscar eventos:
                                     </label>
-                                    <input type="text" id="busqueda-eventos" class="form-control" 
-                                           placeholder="Título, lugar o descripción..." 
-                                           onkeyup="aplicarFiltrosEventos()">
+                                    <input type="text" id="busqueda-eventos" class="form-control"
+                                           placeholder="Título, lugar o descripción..."
+                                           onkeyup="dashboardApp.eventos.applyFilters()">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-tags me-1"></i>Categoría:
                                     </label>
-                                    <select id="categoria-eventos" class="form-select" onchange="aplicarFiltrosEventos()">
+                                    <select id="categoria-eventos" class="form-select" onchange="dashboardApp.eventos.applyFilters()">
                                         <option value="">Todas las categorías</option>
+                                        <!-- Opciones se llenan dinámicamente -->
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-money-bill me-1"></i>Precio:
                                     </label>
-                                    <select id="precio-eventos" class="form-select" onchange="aplicarFiltrosEventos()">
+                                    <select id="precio-eventos" class="form-select" onchange="dashboardApp.eventos.applyFilters()">
                                         <option value="">Todos los precios</option>
                                         <option value="gratis">Gratis</option>
                                         <option value="pago">De pago</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2 d-flex align-items-end">
-                                    <button class="btn btn-outline-primary w-100" onclick="limpiarFiltrosEventos()">
+                                    <button class="btn btn-outline-primary w-100" onclick="dashboardApp.eventos.clearFilters()">
                                         <i class="fas fa-eraser me-1"></i>Limpiar
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        
                         <div id="eventos-stats" class="row mb-4" style="display: none;">
                             <div class="col-md-3">
                                 <div class="stats-card">
@@ -609,14 +216,12 @@
                                 </div>
                             </div>
                         </div>
-                        
                         <div id="loading-eventos" class="text-center d-none">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Cargando...</span>
                             </div>
                             <p class="mt-3 loading-text">Cargando eventos disponibles...</p>
                         </div>
-                        
                         <div id="eventos-container">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
@@ -626,1051 +231,37 @@
                     </div>
                 </div>
 
-                        <div id="seccion-buscar-amigos" class="card" style="display: none;">
-            <div class="card-header">
-                <h5><i class="fas fa-search me-2"></i>Encontrar Nuevos Amigos</h5>
-            </div>
-            <div class="card-body">
-                <div class="input-group mb-4">
-                    <input type="text" id="termino-busqueda" class="form-control" 
-                        placeholder="Buscar por nombre...">
-                    <button class="btn btn-primary" onclick="buscarAmigos()">Buscar</button>
-                </div>
-                
-                <div id="resultados-busqueda">
-                    <div class="alert alert-info">
-                        Escribe un nombre en la barra de búsqueda para encontrar usuarios.
+                <!-- Sección Buscar Amigos -->
+                <div id="seccion-buscar-amigos" class="card" style="display: none;">
+                    <div class="card-header">
+                        <h5><i class="fas fa-search me-2"></i>Encontrar Nuevos Amigos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-4">
+                            <input type="text" id="termino-busqueda" class="form-control"
+                                placeholder="Buscar por nombre...">
+                            <button class="btn btn-primary" onclick="dashboardApp.busquedaAmigos.search()">Buscar</button>
+                        </div>
+                        <div id="resultados-busqueda">
+                            <div class="alert alert-info">
+                                Escribe un nombre en la barra de búsqueda para encontrar usuarios.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-                    </div>
-                </div>
-            </div>
-        <div id="seccion-usuarios" class="card" style="display: none;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-users me-2"></i>Gestión de Usuarios</h5>
-                <a href="/usuariosDocument/nuevo" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus me-2"></i>Nuevo Usuario
-                </a>
-            </div>
-    <div class="card-body">
-        <div th:if="${usuariosDocument != null}">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Nombre</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="usuario : ${usuariosDocument}">
-                        <td th:text="${usuario.email}"></td>
-                        <td th:text="${usuario.nombre}"></td>
-                        <td>
-                            <a th:href="@{'/usuariosDocument/editar/' + ${usuario.id}}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a th:href="@{'/usuariosDocument/eliminar/' + ${usuario.id}}" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div th:if="${usuariosDocument == null}">
-            <p>No hay usuarios registrados.</p>
         </div>
     </div>
-</div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script>
-        let currentSection = 'amigos';
-        let eventosActuales = [];
-        let categoriasDisponibles = [];
-        
-        function mostrarSeccion(seccion, event) {
-            if (event && event.preventDefault) event.preventDefault();
-            
-            document.getElementById('seccion-amigos').style.display = 'none';
-            document.getElementById('seccion-hobbies').style.display = 'none';
-            document.getElementById('seccion-eventos').style.display = 'none';
-            document.getElementById('seccion-buscar-amigos').style.display = 'none';
-            
-            const targetId = 'seccion-' + seccion;
-            const targetEl = document.getElementById(targetId);
-            if (targetEl) targetEl.style.display = 'block';
-            currentSection = seccion;
-            
-            document.querySelectorAll('.list-group-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            if (event && event.currentTarget) event.currentTarget.classList.add('active');
-            
-            if (seccion === 'amigos') {
-                cargarEventosParaFiltro();
-                setTimeout(() => cargarGrafoAmigos(), 100);
-            } else if (seccion === 'hobbies') {
-                setTimeout(() => cargarHobbiesDisponibles(), 100);
-            } else if (seccion === 'eventos') {
-                setTimeout(() => {
-                    cargarCategorias();
-                    cargarEventos();
-                }, 100);
-            }
-        }
-        
-        function mostrarLoading(seccion, mostrar) {
-            const loading = document.getElementById(`loading-${seccion}`);
-            if (!loading) return;
-            if (mostrar) {
-                loading.classList.remove('d-none');
-            } else {
-                loading.classList.add('d-none');
-            }
-        }
-
-        function getInitials(name) {
-            if (!name) return '';
-            return name.split(' ').map(n => n[0] || '').join('').slice(0, 3).toUpperCase();
-        }
-
-
-        function cancelarAsistenciaAEvento(eventoId, boton) {
-            boton.disabled = true;
-            boton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Cancelando...`;
-
-            fetch(`/api/eventos/${eventoId}/cancelar`, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        boton.className = "btn btn-success w-100";
-                        boton.innerHTML = `<i class="fas fa-check-circle me-1"></i> Confirmar Asistencia`;
-                        boton.onclick = () => asistirAEvento(eventoId, boton); // ¡Importante! Cambiamos la acción del clic
-                        boton.disabled = false;
-                    } else {
-                        alert("Error al cancelar la asistencia: " + data.error);
-                        boton.className = "btn btn-secondary w-100";
-                        boton.innerHTML = `<i class="fas fa-times-circle me-1"></i> Cancelar Asistencia`;
-                        boton.disabled = false;
-                    }
-                })
-                .catch(err => {
-                    console.error('Fetch error:', err);
-                    boton.disabled = false;
-                });
-        }
-
-
-        function asistirAEvento(eventoId, boton) {
-            boton.disabled = true;
-            boton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Confirmando...`;
-
-            fetch(`/api/eventos/${eventoId}/asistir`, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        boton.className = "btn btn-info w-100"; 
-                        boton.innerHTML = `<i class="fas fa-star"></i> ¡Asistirás!`;
-                    } else {
-                        boton.innerHTML = `Error al confirmar`;
-                        boton.className = "btn btn-danger w-100";
-                        setTimeout(() => { 
-                            boton.disabled = false;
-                            boton.className = "btn btn-success w-100";
-                            boton.innerHTML = `<i class="fas fa-check-circle me-1"></i> Confirmar Asistencia`;
-                        }, 2000);
-                    }
-                })
-                .catch(err => {
-                    console.error('Fetch error:', err);
-                    boton.disabled = false; 
-                });
-        }
-
-
-        function eliminarAmigo(amigoId, boton) {
-            if (!confirm("¿Estás seguro de que quieres eliminar a este amigo?")) {
-                return;
-            }
-
-            const card = boton.closest('.col-md-6'); 
-            boton.disabled = true;
-
-            fetch(`/api/amigos/eliminar/${amigoId}`, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (card) {
-                            card.style.transition = 'opacity 0.5s ease';
-                            card.style.opacity = '0';
-                            setTimeout(() => card.remove(), 500);
-                        }
-                        cargarGrafoAmigos(); 
-                    } else {
-                        alert("Error al eliminar el amigo: " + data.error);
-                        boton.disabled = false;
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert("Ocurrió un error de red. Inténtalo de nuevo.");
-                    boton.disabled = false;
-                });
-        }
-
-        function createGradients(svg) {
-            const defs = svg.append("defs");
-            
-            
-            const userGradient = defs.append("linearGradient")
-                .attr("id", "userGradient");
-            userGradient.append("stop")
-                .attr("offset", "0%")
-                .attr("stop-color", "#FFB3BA"); 
-            userGradient.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", "#FFDFBA"); 
-            
-            const friendGradient = defs.append("linearGradient")
-                .attr("id", "friendGradient");
-            friendGradient.append("stop")
-                .attr("offset", "0%")
-                .attr("stop-color", "#7DD3FC"); 
-            friendGradient.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", "#A5D6A7"); 
-            
-            const linkGradient = defs.append("linearGradient")
-                .attr("id", "linkGradient");
-            linkGradient.append("stop")
-                .attr("offset", "0%")
-                .attr("stop-color", "#7DD3FC")
-                .attr("stop-opacity", 0.6);
-            linkGradient.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", "#A5D6A7")
-                .attr("stop-opacity", 0.6);
-        }
-
-  
-function filtrarAmigosPorEvento() {
-    const eventoId = document.getElementById('filtro-eventos-amigos').value;
-
-    if (!eventoId) {
-        cargarGrafoAmigos();
-        return;
-    }
-
-    mostrarLoading('amigos', true);
     
-    fetch(`/api/amigos/filtrar-por-evento?eventoId=${eventoId}`)
-        .then(response => response.json())
-        .then(data => {
-            mostrarLoading('amigos', false);
-            
-            if (data && data.success) {
-               
-                crearGrafoAmigos(data); 
-                
-                actualizarInfoAmigos(data);
-            } else {
-                document.getElementById('amigos-info').innerHTML = 
-                    `<div class="alert alert-warning">Error al filtrar: ${data.error || 'Respuesta inválida'}</div>`;
-            }
-        })
-        .catch(error => {
-            mostrarLoading('amigos', false);
-            console.error("Error al filtrar amigos:", error);
-        });
-}
-
-        function cargarEventosParaFiltro() {
-            fetch('/api/eventos')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('La respuesta de la red no fue exitosa');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.success) {
-                        const select = document.getElementById('filtro-eventos-amigos');
-                        if (!select) return; 
-
-                        const selectedValue = select.value;
-                        
-                        select.length = 1; 
-                        
-                        data.eventos.forEach(evento => {
-                            const option = document.createElement('option');
-                            option.value = evento.id;
-                            option.textContent = evento.titulo;
-                            select.appendChild(option);
-                        });
-                        
-                        select.value = selectedValue;
-
-                    } else {
-                        console.error("Error en la respuesta de la API al cargar eventos para filtro:", data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error en fetch al cargar eventos para filtro:', error);
-                });
-        }
-        
-        
-        function cargarGrafoAmigos() {
-            mostrarLoading('amigos', true);
-            
-            fetch('/api/amigos')
-                .then(response => response.json())
-                .then(data => {
-                    mostrarLoading('amigos', false);
-                    if (data && data.success) {
-                        crearGrafoAmigos(data);
-                        actualizarInfoAmigos(data);
-                    } else {
-                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
-                        document.getElementById('amigos-info').innerHTML =
-                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
-                    }
-                })
-                .catch(error => {
-                    mostrarLoading('amigos', false);
-                    document.getElementById('amigos-info').innerHTML =
-                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando datos: ${error}</div>`;
-                });
-        }
-
-  
-function buscarAmigos() {
-    const searchTerm = document.getElementById('termino-busqueda').value;
-    const resultadosDiv = document.getElementById('resultados-busqueda');
-    
-    if (searchTerm.trim().length < 2) {
-        resultadosDiv.innerHTML = `<div class="alert alert-warning">Escribe al menos 2 letras para buscar.</div>`;
-        return;
-    }
-
-    resultadosDiv.innerHTML = `<div class="text-center"><div class="spinner-border"></div></div>`;
-
-    fetch(`/api/usuarios/buscar?q=${encodeURIComponent(searchTerm)}`)
-        .then(response => response.json())
-        .then(usuarios => {
-            mostrarResultadosBusqueda(usuarios);
-        })
-        .catch(err => {
-            resultadosDiv.innerHTML = `<div class="alert alert-danger">Error en la búsqueda.</div>`;
-            console.error(err);
-        });
-}
-
-function mostrarResultadosBusqueda(usuarios) {
-    const resultadosDiv = document.getElementById('resultados-busqueda');
-    if (!usuarios || usuarios.length === 0) {
-        resultadosDiv.innerHTML = `<div class="alert alert-info">No se encontraron usuarios con ese nombre.</div>`;
-        return;
-    }
-
-    let html = '<ul class="list-group">';
-    usuarios.forEach(usuario => {
-        html += `
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="mb-0">${usuario.nombre}</h6>
-                    <small class="text-muted">${usuario.email}</small>
-                </div>
-                <button id="btn-amigo-${usuario.id}" class="btn btn-sm btn-outline-primary" onclick="agregarAmigo(${usuario.id}, this)">
-                    <i class="fas fa-user-plus me-1"></i> Agregar Amigo
-                </button>
-            </li>
-        `;
-    });
-    html += '</ul>';
-    resultadosDiv.innerHTML = html;
-}
-
-function agregarAmigo(amigoId, boton) {
-    boton.disabled = true; 
-    boton.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-    fetch(`/api/amigos/agregar/${amigoId}`, { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                boton.className = "btn btn-sm btn-success";
-                boton.innerHTML = `<i class="fas fa-check"></i> Amigo Agregado`;
-            } else {
-                boton.className = "btn btn-sm btn-danger";
-                boton.innerHTML = `Error`;
-                boton.disabled = false; 
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            boton.disabled = false;
-        });
-}
-        
-        function crearGrafoAmigos(data) {
-            d3.select("#graph-container").selectAll("*").remove();
-            
-            const container = document.getElementById('graph-container');
-            const width = container.offsetWidth || 600;
-            const height = 450;
-            
-            const svg = d3.select("#graph-container")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height);
-
-            createGradients(svg);
-            
-            const nodes = [
-                {
-                    id: data.usuarioActual.id,
-                    name: data.usuarioActual.nombre,
-                    email: data.usuarioActual.email,
-                    isCurrentUser: true
-                }
-            ];
-            
-            if (Array.isArray(data.amigos)) {
-                data.amigos.forEach(amigo => {
-                    nodes.push({
-                        id: amigo.id,
-                        name: amigo.nombre,
-                        email: amigo.email,
-                        isCurrentUser: false
-                    });
-                });
-            }
-            
-            const links = (Array.isArray(data.amigos) ? data.amigos : []).map(amigo => ({
-                source: data.usuarioActual.id,
-                target: amigo.id
-            }));
-            
-            if (nodes.length === 1) {
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height / 2)
-                    .attr("text-anchor", "middle")
-                    .attr("class", "node-label")
-                    .style("font-size", "18px")
-                    .style("fill", "#636e72")
-                    .text("No tienes amigos conectados aún");
-                return;
-            }
-            
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-                .force("charge", d3.forceManyBody().strength(-400))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collision", d3.forceCollide().radius(50)); 
-            
-            const link = svg.append("g")
-                .attr("class", "links")
-                .selectAll("line")
-                .data(links)
-                .join("line")
-                .attr("class", "link");
-            
-            const nodeGroup = svg.append("g")
-                .attr("class", "nodes")
-                .selectAll("g")
-                .data(nodes)
-                .join("g")
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended));
-            
-            nodeGroup.append("circle")
-                .attr("class", d => d.isCurrentUser ? "node current-user" : "node")
-                .attr("r", 35);
-            
-            nodeGroup.append("text")
-                .attr("class", "node-label")
-                .attr("y", 5)
-                .style("font-size", "16px")
-                .style("font-weight", "bold")
-                .style("fill", "#2d3436")
-                .text(d => getInitials(d.name));
-            
-            nodeGroup.append("text")
-                .attr("class", "node-label")
-                .attr("y", 55)
-                .style("font-size", "14px")
-                .style("font-weight", d => d.isCurrentUser ? "bold" : "600")
-                .text(d => d.name);
-            
-            nodeGroup.append("title")
-                .text(d => d.email ? `${d.name}\n${d.email}` : d.name);
-            
-            function dragstarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-            
-            function dragged(event, d) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-            
-            function dragended(event, d) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
-            
-            simulation.on("tick", () => {
-                link
-                    .attr("x1", d => d.source.x)
-                    .attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x)
-                    .attr("y2", d => d.target.y);
-                
-                nodeGroup
-                    .attr("transform", d => `translate(${d.x},${d.y})`);
-            });
-        }
-        
-        function actualizarInfoAmigos(data) {
-            let info = `<h6><i class="fas fa-network-wired me-2"></i>Tu Red de Amigos en Neo4j:</h6>`;
-            info += `<p><strong>Tienes ${Array.isArray(data.amigos) ? data.amigos.length : 0} amigo(s) conectado(s)</strong></p>`;
-            
-            if (Array.isArray(data.amigos) && data.amigos.length > 0) {
-                info += `<div class="row">`;
-                data.amigos.forEach(amigo => {
-                    info += `<div class="col-md-6 mb-3">
-                        <div class="friend-card card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="friend-avatar me-3">
-                                        ${getInitials(amigo.nombre)}
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1">${amigo.nombre}</h6>
-                                            <small class="text-muted">
-                                                <i class="fas fa-envelope me-1"></i>
-                                                ${amigo.email || ''}
-                                            </small>
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm" onclick="eliminarAmigo(${amigo.id}, this)">
-                                            <i class="fas fa-user-minus"></i>
-                                        </button>
-                                    </div>                              
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                info += `</div>`;
-                
-                info += `<div class="alert alert-info mt-3">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Leyenda:</strong>
-                    <span style="color: #FFB3BA;"><i class="fas fa-circle"></i></span> Tú &nbsp;&nbsp;
-                    <span style="color: #7DD3FC;"><i class="fas fa-circle"></i></span> Tus amigos &nbsp;&nbsp;
-                    <small>Los nodos se pueden arrastrar para reorganizar el grafo</small>
-                </div>`;
-            }
-            
-            document.getElementById('amigos-info').innerHTML = info;
-        }
-        
+    <script th:inline="javascript">
        
-        function cargarHobbiesDisponibles() {
-            fetch('/api/hobbies-disponibles')
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.success) {
-                        const select = document.getElementById('filtro-hobbies');
-                        select.innerHTML = '<option value="">Todos los hobbies</option>';
-                        
-                        if (Array.isArray(data.hobbies)) {
-                            data.hobbies.forEach(hobby => {
-                                const option = document.createElement('option');
-                                option.value = hobby;
-                                option.textContent = hobby;
-                                select.appendChild(option);
-                            });
-                        }
-                        
-                        aplicarFiltroHobbies();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error cargando hobbies:', error);
-                });
-        }
-        
-        function aplicarFiltroHobbies() {
-            mostrarLoading('hobbies', true);
-            const filtro = document.getElementById('filtro-hobbies').value;
-            
-            fetch(`/api/amigos-hobbies${filtro ? '?filtroHobby=' + encodeURIComponent(filtro) : ''}`)
-                .then(response => response.json())
-                .then(data => {
-                    mostrarLoading('hobbies', false);
-                    if (data && data.success) {
-                        crearGrafoHobbies(data);
-                        actualizarInfoHobbies(data);
-                    } else {
-                        const err = data && data.error ? data.error : 'Respuesta inválida del servidor';
-                        document.getElementById('hobbies-info').innerHTML =
-                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
-                    }
-                })
-                .catch(error => {
-                    mostrarLoading('hobbies', false);
-                    console.error('Error:', error);
-                    document.getElementById('hobbies-info').innerHTML =
-                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error cargando datos: ${error}</div>`;
-                });
-        }
-        
-        function crearGrafoHobbies(data) {
-            // Limpiar contenedor
-            d3.select("#hobbies-graph-container").selectAll("*").remove();
-            
-            const container = document.getElementById('hobbies-graph-container');
-            const width = container.offsetWidth || 600;
-            const height = 450;
-            
-            const svg = d3.select("#hobbies-graph-container")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height);
-
-            createGradients(svg);
-            
-            // Preparar datos
-            const nodes = [
-                {
-                    id: data.usuarioActual.id,
-                    name: data.usuarioActual.nombre,
-                    hobbies: Array.isArray(data.usuarioActual.hobbies) ? data.usuarioActual.hobbies : [],
-                    isCurrentUser: true
-                }
-            ];
-            
-            if (Array.isArray(data.amigosConHobbies)) {
-                data.amigosConHobbies.forEach(amigo => {
-                    nodes.push({
-                        id: amigo.id,
-                        name: amigo.nombre,
-                        hobbies: Array.isArray(amigo.hobbies) ? amigo.hobbies : [],
-                        isCurrentUser: false
-                    });
-                });
-            }
-            
-            const links = (Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies : []).map(amigo => ({
-                source: data.usuarioActual.id,
-                target: amigo.id
-            }));
-            
-            if (nodes.length === 1) {
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height / 2)
-                    .attr("text-anchor", "middle")
-                    .attr("class", "node-label")
-                    .style("font-size", "18px")
-                    .style("fill", "#636e72")
-                    .text(data.filtroAplicado ? 
-                        `No hay amigos con el hobby "${data.filtroAplicado}"` : 
-                        "No tienes amigos conectados");
-                return;
-            }
-            
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(180))
-                .force("charge", d3.forceManyBody().strength(-500))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collision", d3.forceCollide().radius(60));
-            
-            const link = svg.append("g")
-                .attr("class", "links")
-                .selectAll("line")
-                .data(links)
-                .join("line")
-                .attr("class", "link");
-            
-            const nodeGroup = svg.append("g")
-                .attr("class", "nodes")
-                .selectAll("g")
-                .data(nodes)
-                .join("g")
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended));
-            
-            // Círculos más grandes para hobbies
-            nodeGroup.append("circle")
-                .attr("class", d => d.isCurrentUser ? "node current-user" : "node")
-                .attr("r", 40);
-            
-            // Texto con iniciales como avatar
-            nodeGroup.append("text")
-                .attr("class", "node-label")
-                .attr("y", 5)
-                .style("font-size", "18px")
-                .style("font-weight", "bold")
-                .style("fill", "#2d3436")
-                .text(d => getInitials(d.name));
-            
-            // Nombre debajo del círculo
-            nodeGroup.append("text")
-                .attr("class", "node-label")
-                .attr("y", 60)
-                .style("font-size", "14px")
-                .style("font-weight", d => d.isCurrentUser ? "bold" : "600")
-                .text(d => d.name);
-            
-            // Mostrar hobbies debajo del nombre con mejor legibilidad
-            nodeGroup.each(function(d) {
-                const group = d3.select(this);
-                (d.hobbies || []).slice(0, 2).forEach((hobby, index) => {
-                    group.append("text")
-                        .attr("y", 78 + (index * 14))
-                        .attr("class", "node-hobby")
-                        .style("font-weight", "500")
-                        .text(hobby);
-                });
-                if ((d.hobbies || []).length > 2) {
-                    group.append("text")
-                        .attr("y", 78 + (2 * 14))
-                        .attr("class", "node-hobby")
-                        .style("font-style", "italic")
-                        .text(`+${d.hobbies.length - 2} más`);
-                }
-            });
-            
-            // Tooltip con todos los hobbies
-            nodeGroup.append("title")
-                .text(d => `${d.name}\nHobbies: ${(d.hobbies || []).join(', ') || 'Sin hobbies'}`);
-            
-            // Funciones de arrastre para hobbies
-            function dragstarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-            
-            function dragged(event, d) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-            
-            function dragended(event, d) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
-            
-            // Actualizar posiciones
-            simulation.on("tick", () => {
-                link
-                    .attr("x1", d => d.source.x)
-                    .attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x)
-                    .attr("y2", d => d.target.y);
-                
-                nodeGroup
-                    .attr("transform", d => `translate(${d.x},${d.y})`);
-            });
-        }
-        
-        function actualizarInfoHobbies(data) {
-            let info = `<h6><i class="fas fa-heart me-2"></i>Red de Amigos por Hobbies:</h6>`;
-            
-            if (data.filtroAplicado) {
-                info += `<div class="alert alert-info py-2">
-                    <i class="fas fa-filter me-2"></i>
-                    <strong>Filtro aplicado:</strong> "${data.filtroAplicado}" - 
-                    Mostrando ${Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies.length : 0} amigo(s)
-                </div>`;
-            }
-            
-            info += `<p><strong>${Array.isArray(data.amigosConHobbies) ? data.amigosConHobbies.length : 0} amigo(s) ${data.filtroAplicado ? 'con este hobby' : 'total'}</strong></p>`;
-            
-            if (Array.isArray(data.amigosConHobbies) && data.amigosConHobbies.length > 0) {
-                info += `<div class="row">`;
-                data.amigosConHobbies.forEach(amigo => {
-                    info += `<div class="col-md-6 mb-3">
-                        <div class="friend-card card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="friend-avatar me-3">
-                                        ${getInitials(amigo.nombre)}
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-2">${amigo.nombre}</h6>
-                                        <div class="d-flex flex-wrap">`;
-                    (amigo.hobbies || []).forEach(hobby => {
-                        const isFiltered = data.filtroAplicado && hobby.toLowerCase().includes((data.filtroAplicado || '').toLowerCase());
-                        info += `<span class="hobby-badge ${isFiltered ? 'bg-warning' : ''}">${hobby}</span>`;
-                    });
-                    info += `</div></div></div>
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                info += `</div>`;
-                
-                info += `<div class="alert alert-info mt-3">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Leyenda:</strong> 
-                    <span style="color: #FFB3BA;"><i class="fas fa-circle"></i></span> Tú &nbsp;&nbsp;
-                    <span style="color: #7DD3FC;"><i class="fas fa-circle"></i></span> Tus amigos &nbsp;&nbsp;
-                    <span class="hobby-badge bg-warning">Hobby filtrado</span>
-                </div>`;
-            }
-            
-            document.getElementById('hobbies-info').innerHTML = info;
-        }
-        
-        
-function cargarEventos() {
-    mostrarLoading('eventos', true);
-
-    const todosEventosPromise = fetch('/api/eventos').then(res => res.json());
-    const misEventosIdsPromise = fetch('/api/mis-eventos-ids').then(res => res.json());
-
-    Promise.all([todosEventosPromise, misEventosIdsPromise])
-        .then(([dataTodos, dataMisIds]) => {
-            mostrarLoading('eventos', false);
-
-            if (dataTodos.success && dataMisIds.success) {
-                eventosActuales = dataTodos.eventos || [];
-                const misEventosIds = new Set(dataMisIds.eventoIds || []); // Usamos un Set para búsquedas rápidas
-
-                mostrarEventos(eventosActuales, misEventosIds); 
-
-                actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
-                document.getElementById('eventos-stats').style.display = 'flex';
-            } else {
-                document.getElementById('eventos-container').innerHTML = 
-                    `<div class="alert alert-warning">Error cargando datos de eventos.</div>`;
-            }
-        })
-        .catch(error => {
-            mostrarLoading('eventos', false);
-            console.error("Error en Promise.all de eventos:", error);
-            document.getElementById('eventos-container').innerHTML = 
-                `<div class="alert alert-danger">Error de red al cargar eventos.</div>`;
-        });
-}
-        
-        function cargarCategorias() {
-            fetch('/api/eventos/categorias')
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.success) {
-                        categoriasDisponibles = data.categorias || [];
-                        const select = document.getElementById('categoria-eventos');
-                        select.innerHTML = '<option value="">Todas las categorías</option>';
-                        
-                        categoriasDisponibles.forEach(categoria => {
-                            const option = document.createElement('option');
-                            option.value = categoria;
-                            option.textContent = categoria;
-                            select.appendChild(option);
-                        });
-                        
-                        document.getElementById('categorias-disponibles').textContent = categoriasDisponibles.length;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error cargando categorías:', error);
-                });
-        }
-        
-        function aplicarFiltrosEventos() {
-            const busqueda = document.getElementById('busqueda-eventos').value.trim();
-            const categoria = document.getElementById('categoria-eventos').value;
-            const precio = document.getElementById('precio-eventos').value;
-            
-            const params = new URLSearchParams();
-            if (busqueda) params.append('busqueda', busqueda);
-            if (categoria) params.append('categoria', categoria);
-            if (precio) params.append('precio', precio);
-            
-            mostrarLoading('eventos', true);
-            
-            fetch(`/api/eventos/filtrar?${params.toString()}`)
-                .then(response => response.json())
-                .then(data => {
-                    mostrarLoading('eventos', false);
-                    if (data && data.success) {
-                        const eventosFiltrados = data.eventos || [];
-                        mostrarEventos(eventosFiltrados);
-                        
-                        // Contar filtros activos
-                        let filtrosActivos = 0;
-                        if (busqueda) filtrosActivos++;
-                        if (categoria) filtrosActivos++;
-                        if (precio) filtrosActivos++;
-                        
-                        actualizarEstadisticas(eventosActuales.length, eventosFiltrados.length, filtrosActivos);
-                    } else {
-                        const err = data && data.error ? data.error : 'Error aplicando filtros';
-                        document.getElementById('eventos-container').innerHTML =
-                            `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Error: ${err}</div>`;
-                    }
-                })
-                .catch(error => {
-                    mostrarLoading('eventos', false);
-                    document.getElementById('eventos-container').innerHTML =
-                        `<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Error filtrando eventos: ${error}</div>`;
-                });
-        }
-        
-        function limpiarFiltrosEventos() {
-            document.getElementById('busqueda-eventos').value = '';
-            document.getElementById('categoria-eventos').value = '';
-            document.getElementById('precio-eventos').value = '';
-            mostrarEventos(eventosActuales);
-            actualizarEstadisticas(eventosActuales.length, eventosActuales.length, 0);
-        }
-        
-        function mostrarEventos(eventos, misEventosIds) { // <-- CAMBIO 1: Acepta un nuevo parámetro
-    const container = document.getElementById('eventos-container');
-    
-    if (!eventos || eventos.length === 0) {
-        container.innerHTML = `
-            <div class="no-events">
-                <i class="fas fa-calendar-times"></i>
-                <h4>No se encontraron eventos</h4>
-                <p>No hay eventos disponibles con los filtros aplicados.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    let html = '<div class="row">';
-    
-    eventos.forEach(evento => {
-        const fechaEvento = new Date(evento.fechaEvento);
-        const fechaFormateada = fechaEvento.toLocaleDateString('es-CO', {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
-        const horaFormateada = fechaEvento.toLocaleTimeString('es-CO', {
-            hour: '2-digit', minute: '2-digit'
-        });
-        
-        const esGratis = !evento.precio || evento.precio === 0;
-        const precioTexto = esGratis ? 'GRATIS' : `${evento.precio.toLocaleString('es-CO')}`;
-        const precioClass = esGratis ? 'gratis' : '';
-
-            let botonAsistenciaHtml = '';
-            if (misEventosIds.has(evento.id)) {
-                botonAsistenciaHtml = `
-                    <button id="btn-asistir-${evento.id}" class="btn btn-secondary w-100" onclick="cancelarAsistenciaAEvento(${evento.id}, this)">
-                        <i class="fas fa-times-circle me-1"></i> Cancelar Asistencia
-                    </button>
-                `;
-            } else {
-                botonAsistenciaHtml = `
-                    <button id="btn-asistir-${evento.id}" class="btn btn-success w-100" onclick="asistirAEvento(${evento.id}, this)">
-                        <i class="fas fa-check-circle me-1"></i> Confirmar Asistencia
-                    </button>
-                `;
-            }
-        
-        html += `
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="event-card card h-100">
-                    <div class="position-relative">
-                        <img src="${evento.imagenUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500'}" 
-                             class="event-image" alt="${evento.titulo}">
-                        <div class="event-category">${evento.categoria || 'General'}</div>
-                        <div class="event-price ${precioClass}">${precioTexto}</div>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mb-3">${evento.titulo}</h5>
-                        <p class="event-date mb-2">
-                            <i class="fas fa-calendar me-2"></i> ${fechaFormateada} a las ${horaFormateada}
-                        </p>
-                        <p class="event-location mb-2">
-                            <i class="fas fa-map-marker-alt me-2"></i> ${evento.lugar}
-                        </p>
-                        <p class="event-organizer mb-3">
-                            <i class="fas fa-user-tie me-2"></i> ${evento.organizador}
-                        </p>
-                        <p class="card-text flex-grow-1 mb-3">
-                            ${evento.descripcion ? (evento.descripcion.length > 150 ? 
-                                evento.descripcion.substring(0, 150) + '...' : evento.descripcion) : 
-                                'Sin descripción disponible'}
-                        </p>
-                        
-                        <div class="mt-auto">
-                            ${evento.capacidadMaxima ? 
-                                `<small class="text-muted d-block mb-2">
-                                    <i class="fas fa-users me-1"></i> Capacidad máxima: ${evento.capacidadMaxima} personas
-                                </small>` : ''
-                            }
-                            <!-- CAMBIO 3: Usamos la variable con el botón correcto -->
-                            <div class="d-flex flex-column gap-2">
-                                <div class="btn-group w-100" role="group">
-                                    <a href="/eventos/editar/${evento.id}" class="btn btn-light btn-sm"><i class="fas fa-edit"></i> Editar</a>
-                                    <a href="/eventos/eliminar/${evento.id}" class="btn btn-outline-danger btn-sm"
-                                       onclick="return confirm('¿Estás seguro de que quieres eliminar el evento \\'${evento.titulo}\\'?');">
-                                       <i class="fas fa-trash"></i> Eliminar
-                                    </a>
-                                </div>
-                                ${botonAsistenciaHtml} 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    html += '</div>';
-    container.innerHTML = html;
-}
-        
-        function actualizarEstadisticas(total, mostrados, filtros) {
-            document.getElementById('total-eventos').textContent = total;
-            document.getElementById('eventos-mostrados').textContent = mostrados;
-            document.getElementById('filtros-activos').textContent = filtros;
-            document.getElementById('categorias-disponibles').textContent = categoriasDisponibles.length;
-        }
-        
-        function verDetallesEvento(eventoId) {
-            alert(`Ver detalles del evento ${eventoId}\n(Funcionalidad a implementar)`);
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            mostrarSeccion('amigos', { 
-                preventDefault: () => {}, 
-                currentTarget: document.querySelector('.list-group-item.active') 
-            });
-
-            window.addEventListener('resize', () => {
-                if (currentSection === 'amigos') {
-                    cargarGrafoAmigos();
-                } else if (currentSection === 'hobbies') {
-                    cargarHobbiesDisponibles();
-                } else if (currentSection === 'eventos') {
-                    cargarEventos();
-                }
-            });
-        });
+        const initialUserName = /*[[${nombreUsuario}]]*/ 'Usuario Anónimo';
+        const initialUserHobbies = /*[[${hobbiesUsuario}]]*/ [];
+        /*]]>*/
     </script>
+    
+    <script src="/js/dashboard_logic.js"></script> <!-- Enlace al JS externo -->
 </body>
 </html>
